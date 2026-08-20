@@ -8,11 +8,11 @@ Claude Code skills shared across infrastructure-as-code projects.
 
 ## Install
 
-This plugin is served from the [`plugins`](../README.md) marketplace repo one level up:
+This plugin is served from the [`agent-plugins`](../README.md) marketplace repo one level up:
 
 ```
-/plugin marketplace add ~/projects/ai/plugins        # or a git URL once pushed
-/plugin install devops@plugins
+/plugin marketplace add dzangolab/agent-plugins
+/plugin install devops@dzangolab-agent-plugins
 ```
 
 For quick local iteration without installing, launch Claude Code with the plugin loaded directly:
