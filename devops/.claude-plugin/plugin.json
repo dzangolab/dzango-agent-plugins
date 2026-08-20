@@ -1,0 +1,9 @@
+{
+  "name": "devops",
+  "description": "Shared Claude Code skills for infrastructure-as-code projects (Pulumi, Ansible, AWS).",
+  "version": "0.1.0",
+  "author": {
+    "name": "Olivier Pichon",
+    "email": "op@dzango.com"
+  }
+}
