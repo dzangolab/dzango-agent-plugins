@@ -9,6 +9,11 @@
       "name": "devops",
       "source": "./devops",
       "description": "Shared Claude Code skills for infrastructure-as-code projects (Pulumi, Ansible, AWS)."
+    },
+    {
+      "name": "sdlc",
+      "source": "./sdlc",
+      "description": "Claude Code skills for the software development life cycle (technical specs)."
     }
   ]
 }
