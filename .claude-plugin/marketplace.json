@@ -13,7 +13,7 @@
     {
       "name": "sdlc",
       "source": "./sdlc",
-      "description": "Claude Code skills for the software development life cycle (technical specs)."
+      "description": "Claude Code skills for the software development life cycle (technical specs, test plans)."
     }
   ]
 }

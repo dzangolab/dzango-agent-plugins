@@ -5,7 +5,7 @@ dzangolab's marketplace repo hosting multiple Claude Code plugins, one per folde
 ## Plugins
 
 - [`devops`](devops/README.md) — shared skills for infrastructure-as-code projects (Pulumi, Ansible, AWS).
-- [`sdlc`](sdlc/README.md) — skills for the software development life cycle (technical specs).
+- [`sdlc`](sdlc/README.md) — skills for the software development life cycle (technical specs, test plans).
 
 ## Install
 
