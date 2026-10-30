@@ -1,5 +1,6 @@
 {
-  "name": "dzangolab-agent-plugins",
+  "name": "dzango",
+  "description": "Dzango's Claude Code plugins for the software development life cycle and infrastructure-as-code projects.",
   "owner": {
     "name": "Olivier Pichon",
     "email": "op@dzango.com"
