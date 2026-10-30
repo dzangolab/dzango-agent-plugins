@@ -1,9 +1,13 @@
 {
   "name": "devops",
-  "description": "Shared Claude Code skills for infrastructure-as-code projects (Pulumi, Ansible, AWS).",
-  "version": "0.1.0",
   "author": {
-    "name": "Olivier Pichon",
-    "email": "op@dzango.com"
-  }
+    "email": "op@dzango.com",
+    "name": "Olivier Pichon"
+  },
+  "description": "Shared Claude Code skills for infrastructure-as-code projects (Pulumi, Ansible, AWS).",
+  "displayName": "Dzango DevOps",
+  "homepage": "https://github.com/dzangolab/dzango-agent-plugins/tree/main/devops",
+  "license": "MIT",
+  "repository": "https://github.com/dzangolab/dzango-agent-plugins",
+  "version": "0.1.1"
 }

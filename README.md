@@ -6,6 +6,9 @@ generated:
 id: dzango-agent-plugins
 resource: https://github.com/dzangolab/dzango-agent-plugins
 sources:
+  - id: license
+    resource: LICENSE
+    title: MIT License
   - id: marketplace
     resource: .claude-plugin/marketplace.json
     title: Marketplace manifest
@@ -49,4 +52,9 @@ Add this repo as a marketplace once, then install the plugins you need:
 3. Add an entry for the plugin to `.claude-plugin/marketplace.json` with `"source": "./generate-c4-docs"`, and list it under [Plugins](#plugins).
 4. Run `/plugin install <name>@dzango` to pick it up.
 
+## License
+
+[MIT](LICENSE).[^license]
+
+[^license]: MIT License, `LICENSE`
 [^marketplace]: Marketplace manifest, `.claude-plugin/marketplace.json`
