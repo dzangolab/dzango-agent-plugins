@@ -86,7 +86,7 @@ Bundle files at the spec folder root:
 - `manifest.ai-xf.yaml` (required for Level 1): `ai-xf: "0.5"`, `name: <bundle-name>`, `conformance: 2`. If it is missing, propose creating it and confirm the name with the user.
 - `index.md`: headed sections of list entries linking to each spec with its description; no frontmatter except an optional `okf_version: "0.2"`.
 - `log.md`: `## YYYY-MM-DD` headings, newest first; prose entries starting with one of the bold leading words `Initialization`, `Creation`, `Update`, `Merge`, `Split`, `Deprecation`, `Contradiction`, `Resolution`, `Gap`. Read existing entries and add to them; never regenerate the log. Log lifecycle events only, so the log stays short:
-  - add an entry for a spec's creation (with its status), its approval on merge (`draft` → `stable`, written by the `ai-xf-approve` workflow, not by you), a split, a merge, a deprecation, a contradiction or resolution between stable specs, a gap, or a bundle-wide change (e.g. a folder reorganization);
+  - add an entry for a spec's creation (with its status), its approval on merge (`draft` → `stable`, written by okf-approve, not by you), a split, a merge, a deprecation, a contradiction or resolution between stable specs, a gap, or a bundle-wide change (e.g. a folder reorganization);
   - never log edits to a `draft` spec: git history covers them;
   - use `Update` only for a change to a `stable` spec;
   - write one entry per spec per event, combining the changes made in the same session;
@@ -155,40 +155,19 @@ Type-specific questions to cover:
 
 A spec is published as a draft in a pull request, and it is approved by the pull request's review and merge, not in this conversation. The user only gives the go-ahead to publish: never call that go-ahead an approval, and never record it in `verified`.
 
-GitHub never lets the author of a pull request approve it. With a team, a reviewer approves before the merge; working alone, the merge is the approval. Either way, the [`ai-xf-approve` workflow](https://github.com/dzangolab/dzango-agent-plugins/blob/main/.github/workflows/ai-xf-approve.yml) runs on merge, in the repository that holds the bundle: it sets every draft document the pull request changed to `status: stable`, adds one `verified` entry per approving reviewer (or for the person who merged, when nobody approved), adds the approval entry to `log.md`, and pushes that commit to the default branch.
+Approval is recorded by the [okf-approve](https://github.com/dzangolab/okf-approve) GitHub Action, in the repository that contains the spec folder. On merge, following the rules configured for the repository, it sets the documents the pull request changed to `status: stable` and records in `verified` who vouched for them (the approving reviewers, the author, the person who merged, or the folder's owners), with an entry in `log.md`. GitHub never lets the author of a pull request approve it; whether the author's own merge counts is the repository's choice, in its okf-approve rules.
 
 1. **Prepare.** In the repository that holds the spec location:
    - work on a new branch from the default branch, named after the spec (e.g. `docs/<spec-id>`), unless the user names another one; never commit to the default branch;
    - stage only the spec and the bundle files it changed (`index.md`, `log.md`, `manifest.ai-xf.yaml`), never the user's other changes;
    - follow the repository's conventions for branch names, commit messages (e.g. Conventional Commits, `docs(specs): add <spec-id>`) and pull request templates;
-   - check that the repository calls the `ai-xf-approve` workflow on merged pull requests (in `.github/workflows/`). If it doesn't, propose adding the caller below to this pull request; without it, the document stays `draft` after the merge.
+   - check that the repository runs the okf-approve action (a workflow in `.github/workflows/` that uses `dzangolab/okf-approve`). If it doesn't, tell the user that the spec will stay `draft` after the merge, and point them to [its setup](https://github.com/dzangolab/okf-approve#usage); don't add it yourself unless they ask.
 2. **Ask for the go-ahead once,** showing the branch, the files, the commit message and the pull request's title and reviewers (from `CODEOWNERS` when there is one, otherwise ask). The go-ahead covers the commit, the push and the pull request.
 3. **Publish:** commit, push the branch, and open the pull request (e.g. `gh pr create`). Its description gives the spec's intent, a link to the file, the open questions and the side issues. Don't merge it.
 4. **Changes requested in review** are made on the same branch: the spec stays `draft`, and edits to a draft aren't logged.
-5. **Stop at the pull request.** Never approve, merge, or set `stable` and `verified` yourself: the review, the merge and the workflow do.
+5. **Stop at the pull request.** Never approve, merge, or set `stable` and `verified` yourself: the review, the merge and okf-approve do.
 
-To change a `stable` spec, set it back to `status: draft` in the pull request that changes it, keeping its `verified` entries: the workflow marks it `stable` again on merge and adds the new approvals.
-
-The caller workflow, at `.github/workflows/ai-xf-approve.yml` in the bundle's repository (set `bundle` to the spec folder, relative to the repository root, and pin `uses` to a commit of the plugins repository):
-
-```yaml
-name: Mark approved AI-XF documents
-
-on:
-  pull_request:
-    types: [closed]
-
-jobs:
-  approve:
-    permissions:
-      contents: write
-      pull-requests: read
-    uses: dzangolab/dzango-agent-plugins/.github/workflows/ai-xf-approve.yml@<commit sha>
-    with:
-      bundle: .
-```
-
-The workflow pushes to the default branch as `github-actions[bot]`; if that branch is protected, the repository must let the bot push to it.
+To change a `stable` spec, set it back to `status: draft` in the pull request that changes it, keeping its `verified` entries: okf-approve marks it `stable` again on merge and adds the new verifications.
 
 Without a git repository or a remote to push to, write the files and ask the user how the spec will be reviewed; leave it `draft` until then.
 

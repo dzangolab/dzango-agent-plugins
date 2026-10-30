@@ -23,7 +23,7 @@ tags:
   - <tag>
 title: <Title>
 type: <Feature | Bug fix | Refactoring>
-# Added on merge by the ai-xf-approve workflow, never by hand:
+# Added on merge by okf-approve, never by hand:
 # verified:
 #   - at: <ISO 8601 datetime with UTC offset>
 #     by: human:<GitHub login>
