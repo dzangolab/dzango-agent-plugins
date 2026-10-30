@@ -53,7 +53,12 @@ Bundle files at the spec folder root:
 
 - `manifest.ai-xf.yaml` (required for Level 1): `ai-xf: "0.5"`, `name: <bundle-name>`, `conformance: 2`. If it is missing, propose creating it and confirm the name with the user.
 - `index.md`: headed sections of list entries linking to each spec with its description; no frontmatter except an optional `okf_version: "0.2"`.
-- `log.md`: `## YYYY-MM-DD` headings, newest first; prose entries starting with one of the bold leading words `Initialization`, `Creation`, `Update`, `Merge`, `Split`, `Deprecation`, `Contradiction`, `Resolution`, `Gap`. Read existing entries and add to them; never regenerate the log.
+- `log.md`: `## YYYY-MM-DD` headings, newest first; prose entries starting with one of the bold leading words `Initialization`, `Creation`, `Update`, `Merge`, `Split`, `Deprecation`, `Contradiction`, `Resolution`, `Gap`. Read existing entries and add to them; never regenerate the log. Log lifecycle events only, so the log stays short:
+  - add an entry for a spec's creation (with its status), its approval (`draft` → `stable`), a split, a merge, a deprecation, a contradiction or resolution between stable specs, a gap, or a bundle-wide change (e.g. a folder reorganization);
+  - never log edits to a `draft` spec: git history covers them;
+  - use `Update` only for a change to a `stable` spec;
+  - write one entry per spec per event, combining the changes made in the same session;
+  - if the log still grows too long, split it by folder (each folder gets its own `log.md`, the root one keeps the bundle-wide events) rather than archiving it: any other `.md` file would count as a concept.
 - If `index.md` or `log.md` don't exist, ask the user whether to create them.
 
 Validation: if the user has the AI-XF validator (`tools/ai-xf-validate.py` from the AI-XF repo, Python 3.9+), ask for its path and run `python3 <path>/ai-xf-validate.py <bundle-dir> --level 2`; exit code 0 means pass. Don't download and run it without the user's approval.
