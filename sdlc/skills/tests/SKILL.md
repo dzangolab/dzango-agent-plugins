@@ -15,7 +15,7 @@ The plan contains no test code, apart from the Gherkin scenarios, which are a sp
 ## Rules
 
 - **The spec must be given.** The input is one spec, given as a path to (or the content of) a single markdown file. Without one, ask for it; never build a test plan from the conversation, an issue or the code alone. If the spec spans several files or isn't markdown, say so and ask the user for a single markdown file.
-- **Unusable spec: offer the `specs` skill first.** When no spec is available, or the one supplied can't support a test plan (it isn't a spec, it's mostly gaps, it mixes several subjects or types, or answering its gaps would amount to writing it), explain why in a few words and offer to write the spec first with the `specs` skill, using the supplied material as its input. If the user accepts, run the `specs` skill, then plan from the approved spec it produces. If the user declines, go on with the gaps process only if the spec has enough to test; otherwise stop.
+- **Unusable spec: offer the `specs` skill first.** When no spec is available, or the one supplied can't support a test plan (it isn't a spec, it's mostly gaps, it mixes several subjects or types, or answering its gaps would amount to writing it), explain why in a few words and offer to write the spec first with the `specs` skill, using the supplied material as its input. If the user accepts, run the `specs` skill, then plan from the spec it produces. If the user declines, go on with the gaps process only if the spec has enough to test; otherwise stop.
 - **Any spec format.** A spec written by the `specs` skill (see [its template](../specs/template.md)) maps directly onto the plan. For any other spec, map its content onto the same concepts (intent, type, constraints, boundaries, edge cases, user stories or requirements and their acceptance criteria, rollout, blast radius) and confirm the mapping with the user before planning.
 - **Same codebase scope as the spec.** Plan the tests in the repositories the spec's codebase scope covers: whole repositories, an app or package in a monorepo, or several repositories. Take the scope from the spec (a spec written by the `specs` skill records it in Blast radius) and confirm it with the user; when the spec doesn't state it, settle it as described in the [codebase scope section of the specs skill](../specs/SKILL.md#codebase-scope), which also covers repositories without a local working copy. Tests that belong in a repository outside the scope are raised with the user, never added silently.
 - **One plan per spec.** The plan tests exactly the spec's subject. Tests for anything else (a bug you noticed, a missing test elsewhere) are side issues: tell the user and note them in your final reply; don't add them to the plan.
@@ -29,7 +29,7 @@ The plan contains no test code, apart from the Gherkin scenarios, which are a sp
   - Don't test framework or library behaviour, trivial code (getters, pass-throughs), or implementation details that a refactoring could change without changing behaviour.
   - List what you deliberately don't test, and why, in the "Not tested" section, so the reviewer can challenge it.
 - **Plan, don't code.** No test code, step definitions, fixtures code or mocks code. Name what is needed; the code comes later.
-- **The spec is the source of truth.** Don't edit the spec without the user's approval. When an answer to a gap changes or completes the spec, propose updating the spec as well (with the `specs` skill for a spec it wrote), so that the spec and the plan stay consistent.
+- **The spec is the source of truth.** Don't edit the spec without the user's go-ahead. When an answer to a gap changes or completes the spec, propose updating the spec as well (with the `specs` skill for a spec it wrote), so that the spec and the plan stay consistent.
 
 ## Gaps
 
@@ -74,7 +74,7 @@ The test plan uses the same document format as the specs: an [AI-XF 0.5](https:/
 - `id` and filename stem: `<spec-id>-test-plan` (e.g. `feature-csv-export-test-plan`); for a spec without an `id`, use its filename stem.
 - `title`: `Test plan: <spec title>`, identical to the H1.
 - The spec under test is referenced with a `references` link to its `id` when it is in the same bundle (mirrored by a body link in section 1), or with a `sources` entry otherwise.
-- `status`: `draft` while iterating, `stable` once the user approves. When the spec changes after the plan was approved, the plan goes back to `draft` until it's updated.
+- `status`: `draft` until its pull request is merged, then `stable`, with `verified` entries added on merge, exactly as for a spec (see [Publishing in the specs skill](../specs/SKILL.md#publishing)). When the spec changes after the plan was approved, the plan goes back to `draft` until it's updated.
 
 ## Process
 
@@ -82,7 +82,7 @@ The test plan uses the same document format as the specs: an [AI-XF 0.5](https:/
 
 1. Get the spec from the user (see Rules), read the whole file, and read the local material it links to (requirements, sources, related specs). If it's missing or unusable, offer to write it first with the `specs` skill (see Rules).
 2. Settle the codebase scope (see Rules), and check that every repository in it is reachable: a local working copy, or the user's choice for each one without.
-3. Identify its format (from the `specs` skill or other), type, and status. If the spec isn't approved (e.g. `status: draft`), tell the user the plan may need rework, and ask whether to go ahead.
+3. Identify its format (from the `specs` skill or other), type, and status. If the spec isn't approved yet (`status: draft`, its pull request not merged), tell the user the plan may need rework, and ask whether to go ahead.
 4. If the plan already exists, read it and update it rather than starting over.
 
 ### 2. Inventory
@@ -115,9 +115,10 @@ Propose, and get confirmation for:
 
 1. Confirm the file location with the user: propose the spec's folder (the same AI-XF bundle), next to the spec, named `<spec-id>-test-plan.md`, or follow an existing convention in the project.
 2. Write the file with `status: draft`, following [template.md](template.md) exactly: same frontmatter, same sections, same order. Then walk the user through it section by section, starting with the coverage matrix, and ask for corrections.
-3. Iterate until the user approves. On approval, set `status: stable` and add the `verified` entry for the user.
+3. Iterate until the user says the draft is ready for review. The plan stays `status: draft`: approving its content is the reviewers' job, in the pull request.
 4. Update the bundle's `index.md` and `log.md` if they exist, and run the validator if available (see the specs skill).
-5. In your final reply, list:
+5. Publish the draft as a pull request, as described in [Publishing in the specs skill](../specs/SKILL.md#publishing), with a branch named after the plan (e.g. `docs/<spec-id>-test-plan`). When the spec's own pull request is still open, ask whether to add the plan to it or to open a separate one.
+6. In your final reply, give the pull request's URL, and list:
    - the open questions left in the plan, and the tests they block;
    - the gaps found in the spec, and whether the spec was updated;
    - any side issues you noticed.
@@ -142,4 +143,5 @@ Before presenting the draft, check that:
 - [ ] The codebase scope matches the spec's, is confirmed by the user, and is recorded in Scope with the branch and commit analysed per repository; every test location is in a repository in scope.
 - [ ] Tools, locations and test doubles per level come from the codebase or the user.
 - [ ] No test code besides Gherkin.
+- [ ] The plan is `status: draft`, with no new `verified` entry: only the merge of its pull request makes it `stable`.
 - [ ] AI-XF Level 2: same checks as the specs skill, with `type: Test plan` and a resolvable link or source to the spec.

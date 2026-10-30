@@ -1,7 +1,7 @@
 ---
 description: Agent skills for the software development life cycle (technical specs, test plans), for Claude Code and other agents.
 generated:
-  at: 2026-10-30T06:24:52Z
+  at: 2026-10-30T07:20:19Z
   by: claude-code/2.1.314
 id: sdlc-plugin
 links:
@@ -49,6 +49,8 @@ Agent skills for the software development life cycle (technical specs, test plan
   - The tests are grouped by level, from Gherkin acceptance tests down to unit tests.
   - Each test is traced to a spec item.
   - The plan covers the same codebase scope as the spec.
+
+Both skills publish their document as a draft in a pull request, and stop there. The pull request's review and merge approve it: on merge, the [`ai-xf-approve` workflow](https://github.com/dzangolab/dzango-agent-plugins/blob/main/.github/workflows/ai-xf-approve.yml), called from the repository that holds the documents, marks them `stable` and records each approving reviewer, or the person who merged when nobody approved.[^specs]
 
 ## Usage
 

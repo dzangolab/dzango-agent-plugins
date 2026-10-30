@@ -1,0 +1,138 @@
+# Reusable workflow: when a pull request is merged, mark the AI-XF documents it
+# changed as approved. Each document with `status: draft` becomes `stable`, gains
+# one `verified` entry per approving reviewer (or, with no approval, for the
+# person who merged), and gets an approval entry in the bundle's `log.md`.
+#
+# Call it from the repository that holds the bundle:
+#
+#   on:
+#     pull_request:
+#       types: [closed]
+#   jobs:
+#     approve:
+#       uses: dzangolab/dzango-agent-plugins/.github/workflows/ai-xf-approve.yml@<commit sha>
+#       permissions:
+#         contents: write
+#         pull-requests: read
+#       with:
+#         bundle: .
+
+name: Mark approved AI-XF documents
+
+on:
+  workflow_call:
+    inputs:
+      bundle:
+        default: .
+        description: The AI-XF bundle's folder, relative to the repository root.
+        type: string
+
+jobs:
+  approve:
+    if: github.event.pull_request.merged == true
+    permissions:
+      contents: write
+      pull-requests: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}
+
+      - name: Mark approved documents
+        env:
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+          BUNDLE: ${{ inputs.bundle }}
+          GH_TOKEN: ${{ github.token }}
+          MERGED_AT: ${{ github.event.pull_request.merged_at }}
+          MERGED_BY: ${{ github.event.pull_request.merged_by.login }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          python3 - <<'EOF'
+          import datetime, json, os, re, subprocess
+          from pathlib import Path
+
+          env = os.environ
+          pr, repo = env["PR"], env["REPO"]
+          bundle = Path(env["BUNDLE"]).resolve()
+
+          def api(path):
+              out = subprocess.run(["gh", "api", "--paginate", "--slurp", path],
+                                   check=True, capture_output=True, text=True).stdout
+              return [item for page in json.loads(out) for item in page]
+
+          # Each reviewer's latest review counts; keep those that approve.
+          latest = {}
+          for review in sorted(api(f"repos/{repo}/pulls/{pr}/reviews"), key=lambda r: r["submitted_at"] or ""):
+              if review["state"] in ("APPROVED", "CHANGES_REQUESTED", "DISMISSED"):
+                  latest[review["user"]["login"]] = review
+          approvers = [(login, r["submitted_at"]) for login, r in latest.items()
+                       if r["state"] == "APPROVED" and login != env["AUTHOR"]]
+          by_merge = not approvers
+          if by_merge:
+              approvers = [(env["MERGED_BY"], env["MERGED_AT"])]
+
+          files = [f["filename"] for f in api(f"repos/{repo}/pulls/{pr}/files") if f["status"] != "removed"]
+          approved = []
+          for name in files:
+              path = Path(name).resolve()
+              if path.suffix != ".md" or path.name in ("index.md", "log.md") or bundle not in path.parents or not path.exists():
+                  continue
+              lines = path.read_text().split("\n")
+              if lines[0] != "---" or "---" not in lines[1:]:
+                  continue
+              end = lines.index("---", 1)
+              head = lines[1:end]
+              if "status: draft" not in head:
+                  continue
+              head = ["status: stable" if line == "status: draft" else line for line in head]
+              # Drop the template's commented-out `verified` placeholder.
+              head = [line for line in head
+                      if not re.match(r"#\s*(Added on merge|Add when the pull request is approved|Add on approval|verified:|-? *at:|by:)", line)]
+              entries = [f"  - at: {at}\n    by: human:{login}" for login, at in approvers]
+              if "verified:" in head:
+                  i = head.index("verified:") + 1
+                  while i < len(head) and (head[i].startswith(" ") or head[i].startswith("-")):
+                      i += 1
+                  head[i:i] = entries
+              else:
+                  head += ["verified:"] + entries
+              path.write_text("\n".join(["---"] + head + lines[end:]))
+              title = next((l.split(":", 1)[1].strip().strip("'\"") for l in head if l.startswith("title:")), path.stem)
+              approved.append((title, "/" + str(path.relative_to(bundle))))
+
+          if not approved:
+              print("No draft document to mark approved.")
+              raise SystemExit
+
+          log = bundle / "log.md"
+          if log.exists():
+              people = ", ".join(f"@{login}" for login, _ in approvers)
+              how = f"merged in #{pr} by {people} with no review approval" if by_merge else f"approved in #{pr} by {people}"
+              new = [f"**Update**: [{title}]({link}) {how}, and marked stable." for title, link in approved]
+              text = log.read_text().split("\n")
+              today = f"## {datetime.date.today().isoformat()}"
+              if today in text:
+                  at = text.index(today) + 1
+              else:
+                  at = next((i for i, l in enumerate(text) if l.startswith("## ")), len(text))
+                  text[at:at] = [today, ""]
+                  at += 1
+              text[at:at] = [""] + [part for entry in new for part in (entry, "")][:-1]
+              log.write_text("\n".join(text))
+
+          for title, link in approved:
+              print(f"Marked stable: {link}")
+          EOF
+
+      - name: Commit and push
+        env:
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          git add -A
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs: mark documents approved in #$PR as stable"
+          git push
