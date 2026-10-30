@@ -24,10 +24,10 @@ tags:
   - <tag>
 title: "Test plan: <spec title>"
 type: Test plan
-# Add on approval:
+# Added on merge by the ai-xf-approve workflow, never by hand:
 # verified:
 #   - at: <ISO 8601 datetime with UTC offset>
-#     by: human:<id>
+#     by: human:<GitHub login>
 ---
 
 # Test plan: <spec title>

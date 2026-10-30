@@ -37,7 +37,7 @@ Before exploring any code, settle what the analysis covers. Propose a scope, inf
   1. give its path, or clone it to a location they choose;
   2. read it remotely (e.g. `gh api`, `gh search code`): slower and partial, without a code index, so findings from it are marked as lower confidence;
   3. leave it out: it is listed as not analysed, and its components in the blast radius are marked unverified.
-- **Don't change a working copy.** No pull, checkout, stash or clone without the user's approval. Check each working copy's branch and uncommitted changes, and tell the user when it isn't on the branch the work is about, or looks out of date.
+- **Don't change a working copy.** No pull, checkout, stash or clone without the user's go-ahead. Check each working copy's branch and uncommitted changes, and tell the user when it isn't on the branch the work is about, or looks out of date.
 
 ## Spec location
 
@@ -66,16 +66,16 @@ Frontmatter (keys in alphabetical order):
 | `id` | Yes (Level 1) | Lowercase, words separated by `-`, no `/`, unique in the bundle; same as the filename stem (`<type>-<slug>`). Never change it once assigned, even if the file is renamed or moved. |
 | `links` | When related specs exist | Typed edges `{rel, to, note}`; `to` is the target's `id`. Typical `rel`: `depends-on`, `references`, `relates-to` (e.g. a side issue split into its own spec), `supersedes`. |
 | `sources` | When there are sources | List of `{id, resource, title}`; `resource` is required (absolute URL, `/`-prefixed bundle path, or relative path). Use for functional requirements, issues, similar features in other apps, screenshots, logs. |
-| `status` | Yes | `draft` while iterating; `stable` once the user approves; `deprecated` for a tombstone. |
+| `status` | Yes | `draft` until its pull request is merged (see [Publishing](#publishing)); `stable` after; `deprecated` for a tombstone. |
 | `tags` | Recommended | Short strings: area, module, product. |
 | `title` | Recommended | The spec title, identical to the H1. |
 | `type` | **Required** (Level 0) | Exactly one of `Feature`, `Bug fix`, `Refactoring`, matching section 2. |
-| `verified` | On approval | `- by: human:<id>`, `at: <ISO 8601 datetime>`. |
+| `verified` | Added on merge, never by you | One entry per reviewer who approved the pull request, or for the person who merged it when nobody did: `- at: <ISO 8601 datetime>`, `by: human:<GitHub login>`. |
 
 Rules to respect:
 
 - All timestamps include an explicit UTC offset (e.g. `2026-10-29T14:05:00+01:00`); get them from `date -Iseconds`.
-- Actors: `<producer>/<version>` for tools, `human:<id>` for people. Content confirmed by the user is attested with `human:`. Ask the user for their `<id>` once (propose their git `user.email`).
+- Actors: `<producer>/<version>` for tools, `human:<id>` for people. Only the pull request's approval or merge is attested with `human:`, never the author's go-ahead to publish.
 - Every footnote in the body (`[^id]`) matches a `sources[].id`, and every source cited in the body has an `id`.
 - Every `links` entry targets a spec that exists in the bundle, and is mirrored by at least one plain markdown link to the same spec in the body (usually in Context). Body links to other specs use `/`-prefixed paths from the bundle root; other links use absolute URLs or relative paths.
 - The file must never be named `index.md` or `log.md` (reserved).
@@ -86,14 +86,14 @@ Bundle files at the spec folder root:
 - `manifest.ai-xf.yaml` (required for Level 1): `ai-xf: "0.5"`, `name: <bundle-name>`, `conformance: 2`. If it is missing, propose creating it and confirm the name with the user.
 - `index.md`: headed sections of list entries linking to each spec with its description; no frontmatter except an optional `okf_version: "0.2"`.
 - `log.md`: `## YYYY-MM-DD` headings, newest first; prose entries starting with one of the bold leading words `Initialization`, `Creation`, `Update`, `Merge`, `Split`, `Deprecation`, `Contradiction`, `Resolution`, `Gap`. Read existing entries and add to them; never regenerate the log. Log lifecycle events only, so the log stays short:
-  - add an entry for a spec's creation (with its status), its approval (`draft` → `stable`), a split, a merge, a deprecation, a contradiction or resolution between stable specs, a gap, or a bundle-wide change (e.g. a folder reorganization);
+  - add an entry for a spec's creation (with its status), its approval on merge (`draft` → `stable`, written by the `ai-xf-approve` workflow, not by you), a split, a merge, a deprecation, a contradiction or resolution between stable specs, a gap, or a bundle-wide change (e.g. a folder reorganization);
   - never log edits to a `draft` spec: git history covers them;
   - use `Update` only for a change to a `stable` spec;
   - write one entry per spec per event, combining the changes made in the same session;
   - if the log still grows too long, split it by folder (each folder gets its own `log.md`, the root one keeps the bundle-wide events) rather than archiving it: any other `.md` file would count as a concept.
 - If `index.md` or `log.md` don't exist, ask the user whether to create them.
 
-Validation: if the user has the AI-XF validator (`tools/ai-xf-validate.py` from the AI-XF repo, Python 3.9+), ask for its path and run `python3 <path>/ai-xf-validate.py <bundle-dir> --level 2`; exit code 0 means pass. Don't download and run it without the user's approval.
+Validation: if the user has the AI-XF validator (`tools/ai-xf-validate.py` from the AI-XF repo, Python 3.9+), ask for its path and run `python3 <path>/ai-xf-validate.py <bundle-dir> --level 2`; exit code 0 means pass. Don't download and run it without the user's go-ahead.
 
 ## Process
 
@@ -144,11 +144,53 @@ Type-specific questions to cover:
 
 1. Before writing the file, confirm its filename with the user, in the agreed [spec location](#spec-location).
 2. Write the file, then walk the user through it section by section and ask for corrections.
-3. Iterate until the user approves. On approval, set `status: stable` and add the `verified` entry for the user.
+3. Iterate until the user says the draft is ready for review. The spec stays `status: draft`: approving its content is the reviewers' job, in the pull request.
 4. Update the bundle's `index.md` and `log.md` if they exist (or were created at the user's request), and run the validator if available.
-5. In your final reply, list:
+5. [Publish](#publishing) the draft as a pull request.
+6. In your final reply, give the pull request's URL, and list:
    - any open questions left in the spec;
    - the side issues and what the user decided for each (separate spec / later discussion), so nothing is lost.
+
+## Publishing
+
+A spec is published as a draft in a pull request, and it is approved by the pull request's review and merge, not in this conversation. The user only gives the go-ahead to publish: never call that go-ahead an approval, and never record it in `verified`.
+
+GitHub never lets the author of a pull request approve it. With a team, a reviewer approves before the merge; working alone, the merge is the approval. Either way, the [`ai-xf-approve` workflow](https://github.com/dzangolab/dzango-agent-plugins/blob/main/.github/workflows/ai-xf-approve.yml) runs on merge, in the repository that holds the bundle: it sets every draft document the pull request changed to `status: stable`, adds one `verified` entry per approving reviewer (or for the person who merged, when nobody approved), adds the approval entry to `log.md`, and pushes that commit to the default branch.
+
+1. **Prepare.** In the repository that holds the spec location:
+   - work on a new branch from the default branch, named after the spec (e.g. `docs/<spec-id>`), unless the user names another one; never commit to the default branch;
+   - stage only the spec and the bundle files it changed (`index.md`, `log.md`, `manifest.ai-xf.yaml`), never the user's other changes;
+   - follow the repository's conventions for branch names, commit messages (e.g. Conventional Commits, `docs(specs): add <spec-id>`) and pull request templates;
+   - check that the repository calls the `ai-xf-approve` workflow on merged pull requests (in `.github/workflows/`). If it doesn't, propose adding the caller below to this pull request; without it, the document stays `draft` after the merge.
+2. **Ask for the go-ahead once,** showing the branch, the files, the commit message and the pull request's title and reviewers (from `CODEOWNERS` when there is one, otherwise ask). The go-ahead covers the commit, the push and the pull request.
+3. **Publish:** commit, push the branch, and open the pull request (e.g. `gh pr create`). Its description gives the spec's intent, a link to the file, the open questions and the side issues. Don't merge it.
+4. **Changes requested in review** are made on the same branch: the spec stays `draft`, and edits to a draft aren't logged.
+5. **Stop at the pull request.** Never approve, merge, or set `stable` and `verified` yourself: the review, the merge and the workflow do.
+
+To change a `stable` spec, set it back to `status: draft` in the pull request that changes it, keeping its `verified` entries: the workflow marks it `stable` again on merge and adds the new approvals.
+
+The caller workflow, at `.github/workflows/ai-xf-approve.yml` in the bundle's repository (set `bundle` to the spec folder, relative to the repository root, and pin `uses` to a commit of the plugins repository):
+
+```yaml
+name: Mark approved AI-XF documents
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  approve:
+    permissions:
+      contents: write
+      pull-requests: read
+    uses: dzangolab/dzango-agent-plugins/.github/workflows/ai-xf-approve.yml@<commit sha>
+    with:
+      bundle: .
+```
+
+The workflow pushes to the default branch as `github-actions[bot]`; if that branch is protected, the repository must let the bot push to it.
+
+Without a git repository or a remote to push to, write the files and ask the user how the spec will be reviewed; leave it `draft` until then.
 
 ## Quality checklist
 
@@ -167,6 +209,7 @@ Before presenting the draft, check that:
 - [ ] The workflow / user journey has at least one diagram.
 - [ ] Blast radius: for an existing system, every impacted component is named as in the code, with its kind of impact, and validated by the user; for a new system, it says "Not applicable: new system."
 - [ ] The spec is in the spec location the user confirmed.
+- [ ] The spec is `status: draft`, with no new `verified` entry: only the merge of its pull request makes it `stable`.
 - [ ] The codebase scope is confirmed by the user and recorded in Blast radius, with the branch and commit analysed per repository, and anything in scope that wasn't analysed.
 - [ ] No unjustified coupling between components: every dependency the spec introduces or relies on has a reason the user validated.
 - [ ] No implementation plan, task list or code.

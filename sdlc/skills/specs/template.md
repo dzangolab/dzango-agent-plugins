@@ -23,10 +23,10 @@ tags:
   - <tag>
 title: <Title>
 type: <Feature | Bug fix | Refactoring>
-# Add on approval:
+# Added on merge by the ai-xf-approve workflow, never by hand:
 # verified:
 #   - at: <ISO 8601 datetime with UTC offset>
-#     by: human:<id>
+#     by: human:<GitHub login>
 ---
 
 # <Title>
