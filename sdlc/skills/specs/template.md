@@ -168,8 +168,14 @@ For existing systems: the components likely to be impacted, and in what way.
 Components: modules, packages, services, APIs, database tables, config, jobs, integrations, docs, tests.
 Impact kinds: modified, extended, replaced, removed, behaviour change, contract change (API, schema, events), migration needed, retest only.
 Name components as they appear in the code (paths, package names), and add a diagram when the dependencies are not obvious.
-For a new system with nothing existing to impact, write "Not applicable: new system."
+For a new system with nothing existing to impact, write "Not applicable: new system." instead of the table.
+Codebase scope: one bullet per repository (with the app or package path in a monorepo), even for a new system;
+"Not analysed: <reason>" instead of the branch and commit for a repository left out or not reachable.
 -->
+
+**Codebase scope:**
+
+- <repository>[/<app or package path>] @ <branch> (<short commit>)
 
 | Component | Impact | Details |
 | --------- | ------ | ------- |

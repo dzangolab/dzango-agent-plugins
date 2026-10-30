@@ -35,23 +35,28 @@ type: Test plan
 ## 1. Scope
 
 <!--
-The spec under test, its type, and in one or two sentences what this plan proves.
+The spec under test, its type, what this plan proves in one or two sentences, and the codebase scope: one bullet per
+repository (with the app or package path in a monorepo), "Not analysed: <reason>" instead of the branch and commit
+for a repository left out or not reachable.
 -->
 
 - **Spec:** [<spec title>](/<spec-file>.md)
 - **Spec type:** <Feature | Bug fix | Refactoring>
 - **Proves:** <one or two sentences>
+- **Codebase scope:**
+  - <repository>[/<app or package path>] @ <branch> (<short commit>)
 
 ## 2. Strategy
 
 <!--
 The levels used, the tool and location of each (from the codebase's existing setup, or as agreed with the user),
-and what each level runs for real vs replaces with test doubles. List the levels left out, and why.
+and what each level runs for real vs replaces with test doubles. With several repositories in scope, prefix each
+location with its repository, and use one row per level and repository when their tools differ. List the levels left out, and why.
 -->
 
 | Level | Tool | Location | Runs for real | Test doubles |
 | ----- | ---- | -------- | ------------- | ------------ |
-| Acceptance | <tool> | <path> | <components> | <doubles, or "None"> |
+| Acceptance | <tool> | <repository>/<path> | <components> | <doubles, or "None"> |
 
 **Levels not used:** <level: reason, or "None">
 
