@@ -30,3 +30,5 @@ claude plugin validate --strict <plugin>
 ```
 
 The plugin-directory checks (licence, icon) are reported but don't fail the run.
+
+The `OKF validate` workflow (`.github/workflows/okf-validate.yml`) checks every README's frontmatter against OKF 0.2 with [okf-actions/validate](https://github.com/dzangolab/okf-actions/tree/main/validate), following `.github/okf-validate.yml`.

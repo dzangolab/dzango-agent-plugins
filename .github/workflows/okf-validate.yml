@@ -1,0 +1,17 @@
+name: OKF validate
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  okf-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: dzangolab/okf-actions/validate@562672af275bf756488a23a109388f92d4cde909 # v2.0.0
