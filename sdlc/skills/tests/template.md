@@ -7,7 +7,7 @@ Use these sections, in this order. Section guidance is in the HTML comments; rem
 description: Test plan for <spec title>
 generated:
   at: <ISO 8601 datetime with UTC offset>
-  by: claude-code/<version>
+  by: <agent>/<version>
 id: <spec-id>-test-plan
 # When the spec is in the same bundle; mirror it with the body link in section 1
 links:

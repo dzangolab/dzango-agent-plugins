@@ -4,10 +4,10 @@
     "email": "op@dzango.com",
     "name": "Olivier Pichon"
   },
-  "description": "Claude Code skills for the software development life cycle (technical specs, test plans).",
+  "description": "Agent skills for the software development life cycle (technical specs, test plans), for Claude Code and other agents.",
   "displayName": "Dzango SDLC",
   "homepage": "https://github.com/dzangolab/dzango-agent-plugins/tree/main/sdlc",
   "license": "MIT",
   "repository": "https://github.com/dzangolab/dzango-agent-plugins",
-  "version": "0.3.1"
+  "version": "0.4.0"
 }

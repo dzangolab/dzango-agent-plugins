@@ -1,6 +1,6 @@
 ---
 name: specs
-description: Interview the user to turn a messy, ambiguous request into a single high-quality technical spec document (AI-XF 0.5 markdown, a superset of OKF 0.2) for exactly one feature, bug fix, or refactoring. Use when the user asks to write, draft, create, or refine a spec, technical spec, specification, or requirements for a change, or invokes /sdlc:specs.
+description: Interview the user to turn a messy, ambiguous request into a single high-quality technical spec document (AI-XF 0.5 markdown, a superset of OKF 0.2) for exactly one feature, bug fix, or refactoring. Use when the user asks to write, draft, create, or refine a spec, technical spec, specification, or requirements for a change, or invokes the specs skill directly (e.g. /sdlc:specs in Claude Code).
 ---
 
 # Specs
@@ -33,9 +33,9 @@ Before exploring any code, settle what the analysis covers. Propose a scope, inf
 
 - **Never widen the scope silently.** A component found outside the scope (e.g. a consumer in another repository) is raised with the user, who decides whether to add it to the scope.
 - **Record the scope** in the document: each repository, with the app or package path for a monorepo, and the branch and commit analysed, so a reader knows what the analysis is based on. List anything in scope that wasn't analysed, and why.
-- **Local working copies are preferred, not required.** A local working copy is fast to search, gives the current state of the code, and is the only way to use CodeGraph (pass each repository's path as `projectPath` when it has a `.codegraph/` directory). Look for each repository next to the current one, or ask the user for its path. When a repository has no local working copy, ask the user to choose:
+- **Local working copies are preferred, not required.** A local working copy is fast to search, gives the current state of the code, and is the only way to use a code index such as CodeGraph, when you have one (with CodeGraph, pass each repository's path as `projectPath` when it has a `.codegraph/` directory). Look for each repository next to the current one, or ask the user for its path. When a repository has no local working copy, ask the user to choose:
   1. give its path, or clone it to a location they choose;
-  2. read it remotely (e.g. `gh api`, `gh search code`): slower and partial, without CodeGraph, so findings from it are marked as lower confidence;
+  2. read it remotely (e.g. `gh api`, `gh search code`): slower and partial, without a code index, so findings from it are marked as lower confidence;
   3. leave it out: it is listed as not analysed, and its components in the blast radius are marked unverified.
 - **Don't change a working copy.** No pull, checkout, stash or clone without the user's approval. Check each working copy's branch and uncommitted changes, and tell the user when it isn't on the branch the work is about, or looks out of date.
 
@@ -46,7 +46,7 @@ Right after the codebase scope (or first, outside a codebase), settle the folder
 1. Infer candidates, in this order:
    - an AI-XF bundle already in or around the scope: a folder with a `manifest.ai-xf.yaml`;
    - a folder that already holds specs: markdown files with spec frontmatter (`type: Feature`, `Bug fix` or `Refactoring`), in the current folder or a sub-folder (`specs/`, `docs/specs/`, or any other);
-   - a spec folder convention stated in the project (`AGENTS.md`, `CLAUDE.md`, `README.md`, contributing guide);
+   - a spec folder convention stated in the project (agent instructions such as `AGENTS.md`, `CLAUDE.md` or `GEMINI.md`, `README.md`, contributing guide);
    - for a scope with several repositories, the same signs in the folder that holds them (e.g. a `specs/` folder next to the repositories), since the specs then span repositories.
 2. Always confirm with the user: propose the best candidate, and mention the others when there are several.
 3. If you find no suitable candidate, ask the user where the specs should live; don't pick a default.
@@ -62,7 +62,7 @@ Frontmatter (keys in alphabetical order):
 | Key | Required | Value |
 | --- | --- | --- |
 | `description` | Recommended | One-line summary of the intent. |
-| `generated` | Yes (trust field, satisfies Level 2) | `by: claude-code/<version>` (from `claude --version`), `at: <ISO 8601 datetime>`. |
+| `generated` | Yes (trust field, satisfies Level 2) | `by: <agent>/<version>`, the agent writing the spec and its version (e.g. `claude-code/2.1.314` from `claude --version`), `at: <ISO 8601 datetime>`. |
 | `id` | Yes (Level 1) | Lowercase, words separated by `-`, no `/`, unique in the bundle; same as the filename stem (`<type>-<slug>`). Never change it once assigned, even if the file is renamed or moved. |
 | `links` | When related specs exist | Typed edges `{rel, to, note}`; `to` is the target's `id`. Typical `rel`: `depends-on`, `references`, `relates-to` (e.g. a side issue split into its own spec), `supersedes`. |
 | `sources` | When there are sources | List of `{id, resource, title}`; `resource` is required (absolute URL, `/`-prefixed bundle path, or relative path). Use for functional requirements, issues, similar features in other apps, screenshots, logs. |
@@ -115,7 +115,7 @@ Validation: if the user has the AI-XF validator (`tools/ai-xf-validate.py` from 
 
 Work through the sections in order (see [template.md](template.md)), filling the gaps with questions.
 
-- Ask one question at a time by preference, and never more than 3 at a time; this applies to every step, including framing and review. Use `AskUserQuestion` when the answer is a choice between concrete options; use plain questions for open-ended context.
+- Ask one question at a time by preference, and never more than 3 at a time; this applies to every step, including framing and review. Use your structured question tool (e.g. `AskUserQuestion` in Claude Code) when the answer is a choice between concrete options; use plain questions for open-ended context.
 - Offer your proposed answer where you have one, so the user can just confirm or correct it.
 - Probe for what's missing: edge cases, error states, permissions, empty states, data volumes, platforms, backwards compatibility, migration, performance, accessibility, security.
 - Hunt down vague words ("fast", "simple", "better", "some users", "etc.") and replace them with concrete, verifiable statements.
@@ -124,7 +124,7 @@ Work through the sections in order (see [template.md](template.md)), filling the
 - User stories: derive them from the personas and the intent (and from formal requirements, when available), propose them for validation, and agree on acceptance criteria in Given / When / Then form that a test can check.
 - Rollout: ask whether the change ships in one go or in phases. For phases, agree on their order, what each delivers, who gets it, and its exit criteria. Phases split the delivery of this one subject; they never smuggle in another feature, bug fix or refactoring.
 - Prerequisites: for each phase, ask what must be in place before work on it starts (other specs, infrastructure, access, data, decisions). Record "None" only once the user confirms nothing is needed. A prerequisite that is another spec in the bundle also gets a `depends-on` link.
-- Blast radius (existing systems): explore the code to find the components likely to be impacted (callers, dependants, shared contracts, data, config, tests; use CodeGraph's blast-radius summary when the repo is indexed), across every repository in the codebase scope. Present them to the user as hypotheses, together with the kind of impact, and ask what you missed — the user often knows about consumers outside the scope.
+- Blast radius (existing systems): explore the code to find the components likely to be impacted (callers, dependants, shared contracts, data, config, tests; use a code index's impact analysis, such as CodeGraph's blast-radius summary, when you have one and the repo is indexed), across every repository in the codebase scope. Present them to the user as hypotheses, together with the kind of impact, and ask what you missed — the user often knows about consumers outside the scope.
 - Keep a running list of open questions. The interview is done when every section can be written without an assumption.
 
 Type-specific questions to cover:
