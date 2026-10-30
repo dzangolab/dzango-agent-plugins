@@ -24,7 +24,7 @@ tags:
   - <tag>
 title: "Test plan: <spec title>"
 type: Test plan
-# Added on merge by the ai-xf-approve workflow, never by hand:
+# Added on merge by okf-approve, never by hand:
 # verified:
 #   - at: <ISO 8601 datetime with UTC offset>
 #     by: human:<GitHub login>
