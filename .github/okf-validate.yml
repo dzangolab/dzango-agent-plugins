@@ -1,0 +1,6 @@
+# okf-validate rules: https://github.com/dzangolab/okf-actions/tree/main/validate#rules
+rules:
+  # The READMEs are AI-XF concepts without a bundle manifest: OKF is what they can conform to.
+  - paths: ["**/README.md"]
+    spec: okf
+    version: "0.2"
