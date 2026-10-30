@@ -17,6 +17,7 @@ The plan contains no test code, apart from the Gherkin scenarios, which are a sp
 - **The spec must be given.** The input is one spec, given as a path to (or the content of) a single markdown file. Without one, ask for it; never build a test plan from the conversation, an issue or the code alone. If the spec spans several files or isn't markdown, say so and ask the user for a single markdown file.
 - **Unusable spec: offer `/sdlc:specs` first.** When no spec is available, or the one supplied can't support a test plan (it isn't a spec, it's mostly gaps, it mixes several subjects or types, or answering its gaps would amount to writing it), explain why in a few words and offer to write the spec first with `/sdlc:specs`, using the supplied material as its input. If the user accepts, run `/sdlc:specs`, then plan from the approved spec it produces. If the user declines, go on with the gaps process only if the spec has enough to test; otherwise stop.
 - **Any spec format.** A spec written by `/sdlc:specs` (see [its template](../specs/template.md)) maps directly onto the plan. For any other spec, map its content onto the same concepts (intent, type, constraints, boundaries, edge cases, user stories or requirements and their acceptance criteria, rollout, blast radius) and confirm the mapping with the user before planning.
+- **Same codebase scope as the spec.** Plan the tests in the repositories the spec's codebase scope covers: whole repositories, an app or package in a monorepo, or several repositories. Take the scope from the spec (a spec written by `/sdlc:specs` records it in Blast radius) and confirm it with the user; when the spec doesn't state it, settle it as described in the [codebase scope section of the specs skill](../specs/SKILL.md#codebase-scope), which also covers repositories without a local working copy. Tests that belong in a repository outside the scope are raised with the user, never added silently.
 - **One plan per spec.** The plan tests exactly the spec's subject. Tests for anything else (a bug you noticed, a missing test elsewhere) are side issues: tell the user and note them in your final reply; don't add them to the plan.
 - **Don't invent, don't assume.** Every expected result, threshold, input value, data set, error message and permission in the plan comes from the spec, the code, or the user's answer. When the spec is silent, vague or contradictory about something a test needs, ask (see [Gaps](#gaps)). You may offer a proposed answer for the user to confirm, but never write an unconfirmed one into the plan.
 - **Quality over quantity.** Plan the smallest set of tests that proves the spec and guards against its real risks:
@@ -80,8 +81,9 @@ The test plan uses the same document format as the specs: an [AI-XF 0.5](https:/
 ### 1. Load the spec
 
 1. Get the spec from the user (see Rules), read the whole file, and read the local material it links to (requirements, sources, related specs). If it's missing or unusable, offer to write it first with `/sdlc:specs` (see Rules).
-2. Identify its format (`/sdlc:specs` or other), type, and status. If the spec isn't approved (e.g. `status: draft`), tell the user the plan may need rework, and ask whether to go ahead.
-3. If the plan already exists, read it and update it rather than starting over.
+2. Settle the codebase scope (see Rules), and check that every repository in it is reachable: a local working copy, or the user's choice for each one without.
+3. Identify its format (`/sdlc:specs` or other), type, and status. If the spec isn't approved (e.g. `status: draft`), tell the user the plan may need rework, and ask whether to go ahead.
+4. If the plan already exists, read it and update it rather than starting over.
 
 ### 2. Inventory
 
@@ -89,7 +91,7 @@ The test plan uses the same document format as the specs: an [AI-XF 0.5](https:/
    - the spec's own IDs when it has them (`US-1`, `FR-12`);
    - otherwise, IDs counted in document order: `US-n/AC-m` for the m-th acceptance criterion of user story n, `EC-n` for the n-th edge case, `C-n` for the n-th constraint, `R-n` for the n-th rollout exit criterion, `BR-n` for the n-th blast-radius component.
    State the convention used in the plan's Coverage section.
-2. If working in a codebase, explore it (CodeGraph first when the repo is indexed): the existing test frameworks, runners, folders and naming conventions per level; the existing tests around the blast-radius components; how test data and test doubles are handled today. Treat findings as hypotheses to confirm, not facts.
+2. If working in a codebase, explore every repository in the codebase scope (CodeGraph first when a repository is indexed). For each repository, as they often differ: the existing test frameworks, runners, folders and naming conventions per level; the existing tests around the blast-radius components; how test data and test doubles are handled today. Treat findings as hypotheses to confirm, not facts.
 3. Present to the user, briefly: the mapping (for a spec not written by `/sdlc:specs`), the number of testable items per section, and the gaps found. Then work through the gaps (see [Gaps](#gaps)).
 
 ### 3. Agree on the strategy
@@ -97,7 +99,7 @@ The test plan uses the same document format as the specs: an [AI-XF 0.5](https:/
 Propose, and get confirmation for:
 
 - the levels to use, and why any are left out;
-- the tool and location for each level, taken from the codebase's existing setup (if there's none for a level, ask the user rather than picking one);
+- the tool and location for each level, taken from the codebase's existing setup, per repository when the scope has several (if there's none for a level, or the repository wasn't analysed, ask the user rather than picking one);
 - what each level replaces with test doubles, and what it runs for real;
 - the test data and environments the tests need.
 
@@ -137,6 +139,7 @@ Before presenting the draft, check that:
 - [ ] For a bug fix: a reproducing test marked "must fail before the fix and pass after it".
 - [ ] For a refactoring: characterisation tests to write before the change, existing suites under Regression, and no tests of new behaviour.
 - [ ] Regression lists the existing suites touched by the blast radius.
+- [ ] The codebase scope matches the spec's, is confirmed by the user, and is recorded in Scope with the branch and commit analysed per repository; every test location is in a repository in scope.
 - [ ] Tools, locations and test doubles per level come from the codebase or the user.
 - [ ] No test code besides Gherkin.
 - [ ] AI-XF Level 2: same checks as the specs skill, with `type: Test plan` and a resolvable link or source to the spec.

@@ -21,6 +21,38 @@ The user's input will be messy, unclear, ambiguous and full of holes. Your first
 - **Watch out for unjustified couplings.** When the request, the code you explore, or the spec itself makes one component depend on another — or know about its internals — without a clear reason, flag it to the user. Typical signs: a generic or shared package that knows about a specific app or consumer, a component reaching into another's internals instead of its public API, a new circular dependency, two components that must change or ship together, or a feature that only works with one particular implementation of a dependency. Ask why the coupling is needed: if the user justifies it, record the reason in the spec (Constraints or Blast radius); if not, agree with the user on a decoupled outcome to specify instead.
 - **What, not how.** The spec states the problem, the expected outcome and its limits. It does not contain an implementation plan, task breakdown, or code — those are later steps.
 
+## Codebase scope
+
+Before exploring any code, settle what the analysis covers. Propose a scope, inferred from the request, the linked material and the working directory, and confirm it with the user:
+
+| Scope | Typical signs | What it covers |
+| --- | --- | --- |
+| Single repository | The working directory is in a git repository that isn't a monorepo. | The repository. |
+| App or package in a monorepo | Workspace configuration at the repository root: `pnpm-workspace.yaml`, `workspaces` in `package.json`, `turbo.json`, `nx.json`, `lerna.json`, `go.work`, a Cargo `[workspace]`. | The app or package, the workspace packages it depends on and those that depend on it, and the shared root configuration. |
+| Several repositories | The subject spans repositories: the working directory holds sibling repositories (e.g. all the repositories of a product family), or the request names components that live in other repositories. | Each repository the user includes, listed by name. |
+
+- **Never widen the scope silently.** A component found outside the scope (e.g. a consumer in another repository) is raised with the user, who decides whether to add it to the scope.
+- **Record the scope** in the document: each repository, with the app or package path for a monorepo, and the branch and commit analysed, so a reader knows what the analysis is based on. List anything in scope that wasn't analysed, and why.
+- **Local working copies are preferred, not required.** A local working copy is fast to search, gives the current state of the code, and is the only way to use CodeGraph (pass each repository's path as `projectPath` when it has a `.codegraph/` directory). Look for each repository next to the current one, or ask the user for its path. When a repository has no local working copy, ask the user to choose:
+  1. give its path, or clone it to a location they choose;
+  2. read it remotely (e.g. `gh api`, `gh search code`): slower and partial, without CodeGraph, so findings from it are marked as lower confidence;
+  3. leave it out: it is listed as not analysed, and its components in the blast radius are marked unverified.
+- **Don't change a working copy.** No pull, checkout, stash or clone without the user's approval. Check each working copy's branch and uncommitted changes, and tell the user when it isn't on the branch the work is about, or looks out of date.
+
+## Spec location
+
+Right after the codebase scope (or first, outside a codebase), settle the folder the specs live in: it is the AI-XF bundle, and the existing specs in it are needed to spot related specs, prerequisites and contradictions, and to keep `id`s unique.
+
+1. Infer candidates, in this order:
+   - an AI-XF bundle already in or around the scope: a folder with a `manifest.ai-xf.yaml`;
+   - a folder that already holds specs: markdown files with spec frontmatter (`type: Feature`, `Bug fix` or `Refactoring`), in the current folder or a sub-folder (`specs/`, `docs/specs/`, or any other);
+   - a spec folder convention stated in the project (`AGENTS.md`, `CLAUDE.md`, `README.md`, contributing guide);
+   - for a scope with several repositories, the same signs in the folder that holds them (e.g. a `specs/` folder next to the repositories), since the specs then span repositories.
+2. Always confirm with the user: propose the best candidate, and mention the others when there are several.
+3. If you find no suitable candidate, ask the user where the specs should live; don't pick a default.
+
+The spec file goes in the agreed folder as `<type>-<slug>.md`, where `<type>` is `feature`, `bugfix` or `refactoring`, unless the folder already follows another naming convention.
+
 ## AI-XF format
 
 The spec is an [AI-XF 0.5](https://github.com/DavidROliverBA/ai-xf-format/blob/main/SPEC.md) concept, conforming at **Level 2 (AI-XF Full)**. AI-XF is a strict superset of [OKF 0.2](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md), so the spec is also a valid OKF concept: a UTF-8 markdown file with a YAML frontmatter block (opened and closed by `---`), followed by the body. The spec folder is the AI-XF bundle. See [template.md](template.md) for the exact layout.
@@ -69,13 +101,15 @@ Validation: if the user has the AI-XF validator (`tools/ai-xf-validate.py` from 
 
 1. Read the user's prompt and any linked material (issues, screenshots, files).
 2. If the context refers to formal functional requirements (a requirements document, FR IDs, acceptance criteria, user stories), read them and use them as inputs: they are the starting point for the spec, and the spec must stay consistent with them. Reference requirement IDs where relevant, and raise any gap or contradiction with the user rather than resolving it silently.
-3. If working in a codebase, explore the relevant code to ground your questions (what exists today, where the pain is). Treat findings as hypotheses to confirm, not facts.
-4. List every distinct subject you see in the input. For each, note its likely type.
-5. Propose to the user:
+3. If working in a codebase, settle the [codebase scope](#codebase-scope).
+4. Settle the [spec location](#spec-location), and read the existing specs there (their `index.md` first when there is one) to spot related specs.
+5. If working in a codebase, explore the relevant code within the scope to ground your questions (what exists today, where the pain is). Treat findings as hypotheses to confirm, not facts.
+6. List every distinct subject you see in the input. For each, note its likely type.
+7. Propose to the user:
    - a title for the spec;
    - the main subject and its type, and a one-sentence draft of the intent;
    - the side issues you identified, asking for each: separate spec or later discussion.
-6. Do not continue until the user confirms the subject and type. The title is a working title: propose a better one whenever the discussion sharpens the subject, and confirm the final title before writing the file.
+8. Do not continue until the user confirms the subject and type. The title is a working title: propose a better one whenever the discussion sharpens the subject, and confirm the final title before writing the file.
 
 ### 2. Interview
 
@@ -90,7 +124,7 @@ Work through the sections in order (see [template.md](template.md)), filling the
 - User stories: derive them from the personas and the intent (and from formal requirements, when available), propose them for validation, and agree on acceptance criteria in Given / When / Then form that a test can check.
 - Rollout: ask whether the change ships in one go or in phases. For phases, agree on their order, what each delivers, who gets it, and its exit criteria. Phases split the delivery of this one subject; they never smuggle in another feature, bug fix or refactoring.
 - Prerequisites: for each phase, ask what must be in place before work on it starts (other specs, infrastructure, access, data, decisions). Record "None" only once the user confirms nothing is needed. A prerequisite that is another spec in the bundle also gets a `depends-on` link.
-- Blast radius (existing systems): explore the code to find the components likely to be impacted (callers, dependants, shared contracts, data, config, tests; use CodeGraph's blast-radius summary when the repo is indexed). Present them to the user as hypotheses, together with the kind of impact, and ask what you missed — the user often knows about consumers outside the repo.
+- Blast radius (existing systems): explore the code to find the components likely to be impacted (callers, dependants, shared contracts, data, config, tests; use CodeGraph's blast-radius summary when the repo is indexed), across every repository in the codebase scope. Present them to the user as hypotheses, together with the kind of impact, and ask what you missed — the user often knows about consumers outside the scope.
 - Keep a running list of open questions. The interview is done when every section can be written without an assumption.
 
 Type-specific questions to cover:
@@ -108,7 +142,7 @@ Type-specific questions to cover:
 
 ### 4. Review with the user
 
-1. Before writing the file, confirm the file location with the user. Propose `specs/<type>-<slug>.md` at the repository root (or the current directory outside a repository), where `<type>` is `feature`, `bugfix` or `refactoring`, and follow any existing spec folder convention in the project instead if one exists.
+1. Before writing the file, confirm its filename with the user, in the agreed [spec location](#spec-location).
 2. Write the file, then walk the user through it section by section and ask for corrections.
 3. Iterate until the user approves. On approval, set `status: stable` and add the `verified` entry for the user.
 4. Update the bundle's `index.md` and `log.md` if they exist (or were created at the user's request), and run the validator if available.
@@ -132,6 +166,8 @@ Before presenting the draft, check that:
 - [ ] Prerequisites: one sub-section per Rollout phase when there are several; "None" where nothing is required, confirmed by the user.
 - [ ] The workflow / user journey has at least one diagram.
 - [ ] Blast radius: for an existing system, every impacted component is named as in the code, with its kind of impact, and validated by the user; for a new system, it says "Not applicable: new system."
+- [ ] The spec is in the spec location the user confirmed.
+- [ ] The codebase scope is confirmed by the user and recorded in Blast radius, with the branch and commit analysed per repository, and anything in scope that wasn't analysed.
 - [ ] No unjustified coupling between components: every dependency the spec introduces or relies on has a reason the user validated.
 - [ ] No implementation plan, task list or code.
 - [ ] Nothing in the spec is an unvalidated assumption.
