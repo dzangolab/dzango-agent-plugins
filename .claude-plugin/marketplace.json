@@ -14,7 +14,7 @@
     {
       "name": "sdlc",
       "source": "./sdlc",
-      "description": "Claude Code skills for the software development life cycle (technical specs, test plans)."
+      "description": "Agent skills for the software development life cycle (technical specs, test plans), for Claude Code and other agents."
     }
   ]
 }

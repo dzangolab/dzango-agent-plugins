@@ -1,6 +1,6 @@
 ---
 name: tests
-description: Turn a given technical spec (a single markdown file, such as one written by /sdlc:specs) into a test plan — no code — listing the meaningful tests to write, grouped by level from end-to-end acceptance tests (Gherkin) down to unit tests, each traced to the spec. Asks about every gap in the spec instead of assuming. Use when the user asks for a test plan, testing plan, test strategy or test cases for a spec, or invokes /sdlc:tests.
+description: Turn a given technical spec (a single markdown file, such as one written by the specs skill) into a test plan — no code — listing the meaningful tests to write, grouped by level from end-to-end acceptance tests (Gherkin) down to unit tests, each traced to the spec. Asks about every gap in the spec instead of assuming. Use when the user asks for a test plan, testing plan, test strategy or test cases for a spec, or invokes the tests skill directly (e.g. /sdlc:tests in Claude Code).
 ---
 
 # Tests
@@ -15,9 +15,9 @@ The plan contains no test code, apart from the Gherkin scenarios, which are a sp
 ## Rules
 
 - **The spec must be given.** The input is one spec, given as a path to (or the content of) a single markdown file. Without one, ask for it; never build a test plan from the conversation, an issue or the code alone. If the spec spans several files or isn't markdown, say so and ask the user for a single markdown file.
-- **Unusable spec: offer `/sdlc:specs` first.** When no spec is available, or the one supplied can't support a test plan (it isn't a spec, it's mostly gaps, it mixes several subjects or types, or answering its gaps would amount to writing it), explain why in a few words and offer to write the spec first with `/sdlc:specs`, using the supplied material as its input. If the user accepts, run `/sdlc:specs`, then plan from the approved spec it produces. If the user declines, go on with the gaps process only if the spec has enough to test; otherwise stop.
-- **Any spec format.** A spec written by `/sdlc:specs` (see [its template](../specs/template.md)) maps directly onto the plan. For any other spec, map its content onto the same concepts (intent, type, constraints, boundaries, edge cases, user stories or requirements and their acceptance criteria, rollout, blast radius) and confirm the mapping with the user before planning.
-- **Same codebase scope as the spec.** Plan the tests in the repositories the spec's codebase scope covers: whole repositories, an app or package in a monorepo, or several repositories. Take the scope from the spec (a spec written by `/sdlc:specs` records it in Blast radius) and confirm it with the user; when the spec doesn't state it, settle it as described in the [codebase scope section of the specs skill](../specs/SKILL.md#codebase-scope), which also covers repositories without a local working copy. Tests that belong in a repository outside the scope are raised with the user, never added silently.
+- **Unusable spec: offer the `specs` skill first.** When no spec is available, or the one supplied can't support a test plan (it isn't a spec, it's mostly gaps, it mixes several subjects or types, or answering its gaps would amount to writing it), explain why in a few words and offer to write the spec first with the `specs` skill, using the supplied material as its input. If the user accepts, run the `specs` skill, then plan from the approved spec it produces. If the user declines, go on with the gaps process only if the spec has enough to test; otherwise stop.
+- **Any spec format.** A spec written by the `specs` skill (see [its template](../specs/template.md)) maps directly onto the plan. For any other spec, map its content onto the same concepts (intent, type, constraints, boundaries, edge cases, user stories or requirements and their acceptance criteria, rollout, blast radius) and confirm the mapping with the user before planning.
+- **Same codebase scope as the spec.** Plan the tests in the repositories the spec's codebase scope covers: whole repositories, an app or package in a monorepo, or several repositories. Take the scope from the spec (a spec written by the `specs` skill records it in Blast radius) and confirm it with the user; when the spec doesn't state it, settle it as described in the [codebase scope section of the specs skill](../specs/SKILL.md#codebase-scope), which also covers repositories without a local working copy. Tests that belong in a repository outside the scope are raised with the user, never added silently.
 - **One plan per spec.** The plan tests exactly the spec's subject. Tests for anything else (a bug you noticed, a missing test elsewhere) are side issues: tell the user and note them in your final reply; don't add them to the plan.
 - **Don't invent, don't assume.** Every expected result, threshold, input value, data set, error message and permission in the plan comes from the spec, the code, or the user's answer. When the spec is silent, vague or contradictory about something a test needs, ask (see [Gaps](#gaps)). You may offer a proposed answer for the user to confirm, but never write an unconfirmed one into the plan.
 - **Quality over quantity.** Plan the smallest set of tests that proves the spec and guards against its real risks:
@@ -29,7 +29,7 @@ The plan contains no test code, apart from the Gherkin scenarios, which are a sp
   - Don't test framework or library behaviour, trivial code (getters, pass-throughs), or implementation details that a refactoring could change without changing behaviour.
   - List what you deliberately don't test, and why, in the "Not tested" section, so the reviewer can challenge it.
 - **Plan, don't code.** No test code, step definitions, fixtures code or mocks code. Name what is needed; the code comes later.
-- **The spec is the source of truth.** Don't edit the spec without the user's approval. When an answer to a gap changes or completes the spec, propose updating the spec as well (with `/sdlc:specs` for a spec it wrote), so that the spec and the plan stay consistent.
+- **The spec is the source of truth.** Don't edit the spec without the user's approval. When an answer to a gap changes or completes the spec, propose updating the spec as well (with the `specs` skill for a spec it wrote), so that the spec and the plan stay consistent.
 
 ## Gaps
 
@@ -45,7 +45,7 @@ A gap is anything a test needs that the spec doesn't settle. Look for:
 - for a bug fix: missing reproduction steps, or expected behaviour that isn't stated;
 - for a refactoring: no definition of "behaviour unchanged" (which outputs, APIs, performance), or no way to prove equivalence.
 
-Ask about gaps one question at a time by preference, and never more than 3 at a time. Use `AskUserQuestion` when the answer is a choice between concrete options, and plain questions otherwise. Start with the gaps that block the most tests. If the user explicitly defers a gap, write it inline in the plan as `> **Open question:** …` next to the tests it blocks, and mark those tests **Blocked** in the coverage matrix; never fill it with a guess.
+Ask about gaps one question at a time by preference, and never more than 3 at a time. Use your structured question tool (e.g. `AskUserQuestion` in Claude Code) when the answer is a choice between concrete options, and plain questions otherwise. Start with the gaps that block the most tests. If the user explicitly defers a gap, write it inline in the plan as `> **Open question:** …` next to the tests it blocks, and mark those tests **Blocked** in the coverage matrix; never fill it with a guess.
 
 ## Test levels
 
@@ -80,9 +80,9 @@ The test plan uses the same document format as the specs: an [AI-XF 0.5](https:/
 
 ### 1. Load the spec
 
-1. Get the spec from the user (see Rules), read the whole file, and read the local material it links to (requirements, sources, related specs). If it's missing or unusable, offer to write it first with `/sdlc:specs` (see Rules).
+1. Get the spec from the user (see Rules), read the whole file, and read the local material it links to (requirements, sources, related specs). If it's missing or unusable, offer to write it first with the `specs` skill (see Rules).
 2. Settle the codebase scope (see Rules), and check that every repository in it is reachable: a local working copy, or the user's choice for each one without.
-3. Identify its format (`/sdlc:specs` or other), type, and status. If the spec isn't approved (e.g. `status: draft`), tell the user the plan may need rework, and ask whether to go ahead.
+3. Identify its format (from the `specs` skill or other), type, and status. If the spec isn't approved (e.g. `status: draft`), tell the user the plan may need rework, and ask whether to go ahead.
 4. If the plan already exists, read it and update it rather than starting over.
 
 ### 2. Inventory
@@ -91,8 +91,8 @@ The test plan uses the same document format as the specs: an [AI-XF 0.5](https:/
    - the spec's own IDs when it has them (`US-1`, `FR-12`);
    - otherwise, IDs counted in document order: `US-n/AC-m` for the m-th acceptance criterion of user story n, `EC-n` for the n-th edge case, `C-n` for the n-th constraint, `R-n` for the n-th rollout exit criterion, `BR-n` for the n-th blast-radius component.
    State the convention used in the plan's Coverage section.
-2. If working in a codebase, explore every repository in the codebase scope (CodeGraph first when a repository is indexed). For each repository, as they often differ: the existing test frameworks, runners, folders and naming conventions per level; the existing tests around the blast-radius components; how test data and test doubles are handled today. Treat findings as hypotheses to confirm, not facts.
-3. Present to the user, briefly: the mapping (for a spec not written by `/sdlc:specs`), the number of testable items per section, and the gaps found. Then work through the gaps (see [Gaps](#gaps)).
+2. If working in a codebase, explore every repository in the codebase scope (a code index such as CodeGraph first, when you have one and the repository is indexed). For each repository, as they often differ: the existing test frameworks, runners, folders and naming conventions per level; the existing tests around the blast-radius components; how test data and test doubles are handled today. Treat findings as hypotheses to confirm, not facts.
+3. Present to the user, briefly: the mapping (for a spec not written by the `specs` skill), the number of testable items per section, and the gaps found. Then work through the gaps (see [Gaps](#gaps)).
 
 ### 3. Agree on the strategy
 

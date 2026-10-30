@@ -1,7 +1,7 @@
 ---
-description: Claude Code skills for the software development life cycle (technical specs, test plans).
+description: Agent skills for the software development life cycle (technical specs, test plans), for Claude Code and other agents.
 generated:
-  at: 2026-10-30T05:22:35Z
+  at: 2026-10-30T06:24:52Z
   by: claude-code/2.1.314
 id: sdlc-plugin
 links:
@@ -9,9 +9,15 @@ links:
     rel: part-of
     to: ../README.md
 sources:
+  - id: agent-skills
+    resource: https://agentskills.io
+    title: Agent Skills specification
   - id: plugin
     resource: sdlc/.claude-plugin/plugin.json
     title: sdlc plugin manifest
+  - id: skills-cli
+    resource: https://github.com/vercel-labs/skills
+    title: skills CLI
   - id: specs
     resource: sdlc/skills/specs/SKILL.md
     title: specs skill
@@ -20,6 +26,7 @@ sources:
     title: tests skill
 status: stable
 tags:
+  - agent-skills
   - claude-code
   - plugin
   - sdlc
@@ -31,7 +38,7 @@ type: Plugin
 
 Part of the [dzango-agent-plugins](../README.md) marketplace.
 
-Claude Code skills for the software development life cycle (technical specs, test plans).[^plugin]
+Agent skills for the software development life cycle (technical specs, test plans), for Claude Code and other agents.[^plugin]
 
 ## Skills
 
@@ -45,11 +52,11 @@ Claude Code skills for the software development life cycle (technical specs, tes
 
 ## Usage
 
-Once the plugin is installed, `specs` activates whenever you ask Claude to write, draft or refine a spec for a change.[^specs] To invoke it directly, run `/sdlc:specs <your request>`.
+Once the skills are installed, `specs` activates whenever you ask your agent to write, draft or refine a spec for a change.[^specs] In Claude Code, invoke it directly with `/sdlc:specs <your request>`.
 
-`tests` activates when you ask for a test plan for a spec.[^tests] To invoke it directly, run `/sdlc:tests <path to the spec>`.
+`tests` activates when you ask for a test plan for a spec.[^tests] In Claude Code, invoke it directly with `/sdlc:tests <path to the spec>`.
 
-## Install
+## Install in Claude Code
 
 This plugin is served from the [dzango-agent-plugins](../README.md) marketplace:
 
@@ -64,6 +71,17 @@ For quick local iteration without installing, launch Claude Code with the plugin
 claude --plugin-dir /path/to/plugins/sdlc
 ```
 
+## Install in other agents
+
+The skills are plain [Agent Skills](https://agentskills.io) (a folder with a `SKILL.md`), so other agents that read that format, such as Codex, Gemini CLI, GitHub Copilot or Cursor, can use them too.[^agent-skills] Install them with the [`skills` CLI](https://github.com/vercel-labs/skills), which copies them to each agent's skills folder:[^skills-cli]
+
+```
+npx skills add dzangolab/dzango-agent-plugins --skill specs
+npx skills add dzangolab/dzango-agent-plugins --skill tests
+```
+
+[^agent-skills]: Agent Skills specification, https://agentskills.io
 [^plugin]: sdlc plugin manifest, `sdlc/.claude-plugin/plugin.json`
+[^skills-cli]: skills CLI, https://github.com/vercel-labs/skills
 [^specs]: specs skill, `sdlc/skills/specs/SKILL.md`
 [^tests]: tests skill, `sdlc/skills/tests/SKILL.md`

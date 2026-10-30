@@ -7,7 +7,7 @@ Use these sections, in this order. Section guidance is in the HTML comments; rem
 description: <one-line summary of the intent>
 generated:
   at: <ISO 8601 datetime with UTC offset>
-  by: claude-code/<version>
+  by: <agent>/<version>
 id: <type>-<slug>
 # Only when related specs exist; mirror each one with a body link
 links:
