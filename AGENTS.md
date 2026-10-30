@@ -22,7 +22,7 @@ The `dzango` Claude Code marketplace: one plugin per top-level folder, listed in
 
 ## Checks
 
-Run before every PR; each must end with `✔ Validation passed`:
+Run before every PR; each must end with `✔ Validation passed`. The `Validate` workflow (`.github/workflows/validate.yml`) runs the same commands on every PR and push to `main`; bump its Claude Code version when you upgrade locally.
 
 ```
 claude plugin validate --strict .
