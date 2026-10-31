@@ -1,8 +1,8 @@
 ---
 description: dzangolab's Claude Code marketplace, hosting one plugin per folder.
 generated:
-  at: 2026-10-30T05:22:35Z
-  by: claude-code/2.1.314
+  at: 2026-10-31T16:50:18Z
+  by: claude-code/2.1.316
 id: dzango-agent-plugins
 resource: https://github.com/dzangolab/dzango-agent-plugins
 sources:
@@ -27,7 +27,7 @@ dzangolab's marketplace repo for the `dzango` marketplace. It hosts several Clau
 ## Plugins
 
 - [`devops`](devops/README.md): shared skills for infrastructure-as-code projects (Pulumi, Ansible, AWS).[^marketplace]
-- [`sdlc`](sdlc/README.md): skills for the software development life cycle (technical specs, test plans).[^marketplace]
+- [`sdlc`](sdlc/README.md): skills for the software development life cycle (technical specs, test plans, implementation plans).[^marketplace]
 
 ## Install
 
