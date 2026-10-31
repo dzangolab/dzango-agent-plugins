@@ -1,7 +1,7 @@
 ---
 description: Agent skills for the software development life cycle (technical specs, test plans, implementation plans), for Claude Code and other agents.
 generated:
-  at: 2026-10-31T16:50:18Z
+  at: 2026-10-31T17:27:27Z
   by: claude-code/2.1.316
 id: sdlc-plugin
 links:
@@ -54,7 +54,11 @@ Listed in the order they're used:
   - The tests are grouped by level, from Gherkin acceptance tests down to unit tests.
   - Each test is traced to a spec item.
   - The plan covers the same codebase scope as the spec.
-- `plan`: turns a given spec into an implementation plan of ordered steps, without code.[^plan]
+- `plan`: turns a given spec into an implementation plan of phases and steps, without code.[^plan]
+  - The spec's hard technical problems come first: feasibility is settled before anything is built on it.
+  - Each strong technical choice gets at least two proposed solutions and, where appropriate, an ADR.
+  - The plan evaluates how independently the sub-systems can be worked on, so that several developers can proceed at the same time, and it avoids unnecessary coupling, especially cycles.
+  - The spec's phases are honoured, and the plan can add its own phases and sub-phases, each with a significant outcome.
   - Each step produces a testable deliverable, depends only on previous steps, and ideally touches no more than one or two sub-systems.
   - When a test plan exists for the spec, the constraint is that its tests pass: each test is assigned to a step, and they all pass after the last one.
   - A spec that isn't suitable is sent back to `specs`, on the user's go-ahead.
