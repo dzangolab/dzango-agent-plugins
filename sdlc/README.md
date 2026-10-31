@@ -1,8 +1,8 @@
 ---
-description: Agent skills for the software development life cycle (technical specs, test plans), for Claude Code and other agents.
+description: Agent skills for the software development life cycle (technical specs, test plans, implementation plans), for Claude Code and other agents.
 generated:
-  at: 2026-10-30T08:13:24Z
-  by: claude-code/2.1.314
+  at: 2026-10-31T17:27:27Z
+  by: claude-code/2.1.316
 id: sdlc-plugin
 links:
   - note: A plugin served from the dzango-agent-plugins marketplace
@@ -12,6 +12,9 @@ sources:
   - id: agent-skills
     resource: https://agentskills.io
     title: Agent Skills specification
+  - id: plan
+    resource: sdlc/skills/plan/SKILL.md
+    title: plan skill
   - id: plugin
     resource: sdlc/.claude-plugin/plugin.json
     title: sdlc plugin manifest
@@ -38,9 +41,11 @@ type: Plugin
 
 Part of the [dzango-agent-plugins](../README.md) marketplace.
 
-Agent skills for the software development life cycle (technical specs, test plans), for Claude Code and other agents.[^plugin]
+Agent skills for the software development life cycle (technical specs, test plans, implementation plans), for Claude Code and other agents.[^plugin]
 
 ## Skills
+
+Listed in the order they're used:
 
 - `specs`: interviews the user to turn a messy request into a single technical spec for exactly one feature, bug fix or refactoring.[^specs]
   - The spec is AI-XF 0.5 markdown, a superset of OKF 0.2.
@@ -49,14 +54,24 @@ Agent skills for the software development life cycle (technical specs, test plan
   - The tests are grouped by level, from Gherkin acceptance tests down to unit tests.
   - Each test is traced to a spec item.
   - The plan covers the same codebase scope as the spec.
+- `plan`: turns a given spec into an implementation plan of phases and steps, without code.[^plan]
+  - The spec's hard technical problems come first: feasibility is settled before anything is built on it.
+  - Each strong technical choice gets at least two proposed solutions and, where appropriate, an ADR.
+  - The plan evaluates how independently the sub-systems can be worked on, so that several developers can proceed at the same time, and it avoids unnecessary coupling, especially cycles.
+  - The spec's phases are honoured, and the plan can add its own phases and sub-phases, each with a significant outcome.
+  - Each step produces a testable deliverable, depends only on previous steps, and ideally touches no more than one or two sub-systems.
+  - When a test plan exists for the spec, the constraint is that its tests pass: each test is assigned to a step, and they all pass after the last one.
+  - A spec that isn't suitable is sent back to `specs`, on the user's go-ahead.
 
-Both skills publish their document as a draft in a pull request, and stop there. The pull request's review and merge approve it: on merge, the [okf-approve](https://github.com/dzangolab/okf-actions/tree/main/approve) GitHub Action, run by the repository that contains the documents, marks them `stable` and records who vouched for them, following the repository's rules.[^specs]
+All three skills publish their document as a draft in a pull request, and stop there. The pull request's review and merge approve it: on merge, the [okf-approve](https://github.com/dzangolab/okf-actions/tree/main/approve) GitHub Action, run by the repository that contains the documents, marks them `stable` and records who vouched for them, following the repository's rules.[^specs]
 
 ## Usage
 
 Once the skills are installed, `specs` activates whenever you ask your agent to write, draft or refine a spec for a change.[^specs] In Claude Code, invoke it directly with `/sdlc:specs <your request>`.
 
 `tests` activates when you ask for a test plan for a spec.[^tests] In Claude Code, invoke it directly with `/sdlc:tests <path to the spec>`.
+
+`plan` activates when you ask for an implementation plan for a spec.[^plan] In Claude Code, invoke it directly with `/sdlc:plan <path to the spec>`.
 
 ## Install in Claude Code
 
@@ -78,11 +93,13 @@ claude --plugin-dir /path/to/plugins/sdlc
 The skills are plain [Agent Skills](https://agentskills.io) (a folder with a `SKILL.md`), so other agents that read that format, such as Codex, Gemini CLI, GitHub Copilot or Cursor, can use them too.[^agent-skills] Install them with the [`skills` CLI](https://github.com/vercel-labs/skills), which copies them to each agent's skills folder:[^skills-cli]
 
 ```
+npx skills add dzangolab/dzango-agent-plugins --skill plan
 npx skills add dzangolab/dzango-agent-plugins --skill specs
 npx skills add dzangolab/dzango-agent-plugins --skill tests
 ```
 
 [^agent-skills]: Agent Skills specification, https://agentskills.io
+[^plan]: plan skill, `sdlc/skills/plan/SKILL.md`
 [^plugin]: sdlc plugin manifest, `sdlc/.claude-plugin/plugin.json`
 [^skills-cli]: skills CLI, https://github.com/vercel-labs/skills
 [^specs]: specs skill, `sdlc/skills/specs/SKILL.md`
