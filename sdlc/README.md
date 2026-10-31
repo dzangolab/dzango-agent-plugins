@@ -1,7 +1,7 @@
 ---
-description: Agent skills for the software development life cycle (technical specs, test plans, implementation plans), for Claude Code and other agents.
+description: Agent skills for the software development life cycle (technical specs, test plans, implementation plans, implementation), for Claude Code and other agents.
 generated:
-  at: 2026-10-31T17:27:27Z
+  at: 2026-10-31T18:14:56Z
   by: claude-code/2.1.316
 id: sdlc-plugin
 links:
@@ -12,6 +12,9 @@ sources:
   - id: agent-skills
     resource: https://agentskills.io
     title: Agent Skills specification
+  - id: implement
+    resource: sdlc/skills/implement/SKILL.md
+    title: implement skill
   - id: plan
     resource: sdlc/skills/plan/SKILL.md
     title: plan skill
@@ -41,7 +44,7 @@ type: Plugin
 
 Part of the [dzango-agent-plugins](../README.md) marketplace.
 
-Agent skills for the software development life cycle (technical specs, test plans, implementation plans), for Claude Code and other agents.[^plugin]
+Agent skills for the software development life cycle (technical specs, test plans, implementation plans, implementation), for Claude Code and other agents.[^plugin]
 
 ## Skills
 
@@ -62,8 +65,14 @@ Listed in the order they're used:
   - Each step produces a testable deliverable, depends only on previous steps, and ideally touches no more than one or two sub-systems.
   - When a test plan exists for the spec, the constraint is that its tests pass: each test is assigned to a step, and they all pass after the last one.
   - A spec that isn't suitable is sent back to `specs`, on the user's go-ahead.
+- `implement`: executes a given implementation plan, without asking questions except on feasibility results and undecided ADRs.[^implement]
+  - Each step gets its own feature branch and pull request.
+  - Steps that depend on each other are stacked, in sequential pull requests; independent steps are siblings, in parallel pull requests.
+  - Each pull request lists its expected tests, and checks those seen to pass; it stays a draft until they all do.
+  - A step the plan can't answer for stops, and the steps that don't depend on it carry on.
+  - People review and merge the pull requests.
 
-All three skills publish their document as a draft in a pull request, and stop there. The pull request's review and merge approve it: on merge, the [okf-approve](https://github.com/dzangolab/okf-actions/tree/main/approve) GitHub Action, run by the repository that contains the documents, marks them `stable` and records who vouched for them, following the repository's rules.[^specs]
+`specs`, `tests` and `plan` publish their document as a draft in a pull request, and stop there. The pull request's review and merge approve it: on merge, the [okf-approve](https://github.com/dzangolab/okf-actions/tree/main/approve) GitHub Action, run by the repository that contains the documents, marks them `stable` and records who vouched for them, following the repository's rules.[^specs]
 
 ## Usage
 
@@ -72,6 +81,8 @@ Once the skills are installed, `specs` activates whenever you ask your agent to 
 `tests` activates when you ask for a test plan for a spec.[^tests] In Claude Code, invoke it directly with `/sdlc:tests <path to the spec>`.
 
 `plan` activates when you ask for an implementation plan for a spec.[^plan] In Claude Code, invoke it directly with `/sdlc:plan <path to the spec>`.
+
+`implement` activates when you ask to implement or execute an implementation plan.[^implement] In Claude Code, invoke it directly with `/sdlc:implement <path to the plan>`.
 
 ## Install in Claude Code
 
@@ -93,12 +104,14 @@ claude --plugin-dir /path/to/plugins/sdlc
 The skills are plain [Agent Skills](https://agentskills.io) (a folder with a `SKILL.md`), so other agents that read that format, such as Codex, Gemini CLI, GitHub Copilot or Cursor, can use them too.[^agent-skills] Install them with the [`skills` CLI](https://github.com/vercel-labs/skills), which copies them to each agent's skills folder:[^skills-cli]
 
 ```
+npx skills add dzangolab/dzango-agent-plugins --skill implement
 npx skills add dzangolab/dzango-agent-plugins --skill plan
 npx skills add dzangolab/dzango-agent-plugins --skill specs
 npx skills add dzangolab/dzango-agent-plugins --skill tests
 ```
 
 [^agent-skills]: Agent Skills specification, https://agentskills.io
+[^implement]: implement skill, `sdlc/skills/implement/SKILL.md`
 [^plan]: plan skill, `sdlc/skills/plan/SKILL.md`
 [^plugin]: sdlc plugin manifest, `sdlc/.claude-plugin/plugin.json`
 [^skills-cli]: skills CLI, https://github.com/vercel-labs/skills

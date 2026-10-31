@@ -5,7 +5,7 @@ description: Turn a given technical spec (a single markdown file, such as one wr
 
 # Plan
 
-Produce one implementation plan document for one spec: the phases and steps that take the system from where it is today to the spec being delivered. The plan is the input for the next SDLC step, implementation.
+Produce one implementation plan document for one spec: the phases and steps that take the system from where it is today to the spec being delivered. The plan is the input for the next SDLC step, implementation, by developers or by the `implement` skill, which asks no questions: anything not settled must be in the plan as an open question.
 
 A good plan:
 
