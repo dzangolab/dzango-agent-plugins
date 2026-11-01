@@ -1,7 +1,7 @@
 ---
-description: Agent skills for the software development life cycle (technical specs, test plans, implementation plans), for Claude Code and other agents.
+description: Agent skills for the software development life cycle (technical specs, designs, test plans, implementation plans), for Claude Code and other agents.
 generated:
-  at: 2026-10-31T17:27:27Z
+  at: 2026-11-01T12:24:42Z
   by: claude-code/2.1.316
 id: sdlc-plugin
 links:
@@ -12,6 +12,9 @@ sources:
   - id: agent-skills
     resource: https://agentskills.io
     title: Agent Skills specification
+  - id: design
+    resource: sdlc/skills/design/SKILL.md
+    title: design skill
   - id: plan
     resource: sdlc/skills/plan/SKILL.md
     title: plan skill
@@ -41,7 +44,7 @@ type: Plugin
 
 Part of the [dzango-agent-plugins](../README.md) marketplace.
 
-Agent skills for the software development life cycle (technical specs, test plans, implementation plans), for Claude Code and other agents.[^plugin]
+Agent skills for the software development life cycle (technical specs, designs, test plans, implementation plans), for Claude Code and other agents.[^plugin]
 
 ## Skills
 
@@ -50,6 +53,11 @@ Listed in the order they're used:
 - `specs`: interviews the user to turn a messy request into a single technical spec for exactly one feature, bug fix or refactoring.[^specs]
   - The spec is AI-XF 0.5 markdown, a superset of OKF 0.2.
   - The skill first settles the codebase scope (a single repo, an app in a monorepo, or several repos) and the folder the specs live in.
+- `design`: proposes a design for a given spec, as an architecture document made mainly of C4 diagrams in Mermaid.[^design]
+  - It identifies all the sub-systems involved, in a System context and a Container diagram, with Component and Deployment diagrams where needed.
+  - Each user story gets a dynamic diagram of the workflow between the sub-systems.
+  - Words only clarify the diagrams.
+  - A spec that's ambiguous, confused or otherwise unusable is offered a pass through `specs`, whose output is taken as good enough to proceed.
 - `tests`: turns a given spec (a single markdown file, e.g. from `specs`) into a test plan, without code.[^tests]
   - The tests are grouped by level, from Gherkin acceptance tests down to unit tests.
   - Each test is traced to a spec item.
@@ -63,11 +71,13 @@ Listed in the order they're used:
   - When a test plan exists for the spec, the constraint is that its tests pass: each test is assigned to a step, and they all pass after the last one.
   - A spec that isn't suitable is sent back to `specs`, on the user's go-ahead.
 
-All three skills publish their document as a draft in a pull request, and stop there. The pull request's review and merge approve it: on merge, the [okf-approve](https://github.com/dzangolab/okf-actions/tree/main/approve) GitHub Action, run by the repository that contains the documents, marks them `stable` and records who vouched for them, following the repository's rules.[^specs]
+All four skills publish their document as a draft in a pull request, and stop there. The pull request's review and merge approve it: on merge, the [okf-approve](https://github.com/dzangolab/okf-actions/tree/main/approve) GitHub Action, run by the repository that contains the documents, marks them `stable` and records who vouched for them, following the repository's rules.[^specs]
 
 ## Usage
 
 Once the skills are installed, `specs` activates whenever you ask your agent to write, draft or refine a spec for a change.[^specs] In Claude Code, invoke it directly with `/sdlc:specs <your request>`.
+
+`design` activates when you ask for a design or an architecture for a spec.[^design] In Claude Code, invoke it directly with `/sdlc:design <path to the spec>`.
 
 `tests` activates when you ask for a test plan for a spec.[^tests] In Claude Code, invoke it directly with `/sdlc:tests <path to the spec>`.
 
@@ -93,12 +103,14 @@ claude --plugin-dir /path/to/plugins/sdlc
 The skills are plain [Agent Skills](https://agentskills.io) (a folder with a `SKILL.md`), so other agents that read that format, such as Codex, Gemini CLI, GitHub Copilot or Cursor, can use them too.[^agent-skills] Install them with the [`skills` CLI](https://github.com/vercel-labs/skills), which copies them to each agent's skills folder:[^skills-cli]
 
 ```
+npx skills add dzangolab/dzango-agent-plugins --skill design
 npx skills add dzangolab/dzango-agent-plugins --skill plan
 npx skills add dzangolab/dzango-agent-plugins --skill specs
 npx skills add dzangolab/dzango-agent-plugins --skill tests
 ```
 
 [^agent-skills]: Agent Skills specification, https://agentskills.io
+[^design]: design skill, `sdlc/skills/design/SKILL.md`
 [^plan]: plan skill, `sdlc/skills/plan/SKILL.md`
 [^plugin]: sdlc plugin manifest, `sdlc/.claude-plugin/plugin.json`
 [^skills-cli]: skills CLI, https://github.com/vercel-labs/skills
