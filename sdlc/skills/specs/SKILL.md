@@ -5,7 +5,7 @@ description: Interview the user to turn a messy, ambiguous request into a single
 
 # Specs
 
-Produce one technical spec document, in markdown conforming to AI-XF 0.5 (see [AI-XF format](#ai-xf-format)), that makes the next SDLC steps (test plan, implementation plan, implementation) easy and reliable.
+Produce one technical spec document, in markdown conforming to AI-XF 0.5 (see [AI-XF format](#ai-xf-format)), that makes the next SDLC steps (design, test plan, implementation plan, implementation) easy and reliable.
 
 The user's input will be messy, unclear, ambiguous and full of holes. Your first job is to **ask questions and clarify intent**, not to write. Never assume: every fact, choice and inference that ends up in the spec must be validated by the user.
 
