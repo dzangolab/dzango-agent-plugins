@@ -18,7 +18,7 @@ links:
   - note: <why they are related>
     rel: <relates-to | references | depends-on | supersedes>
     to: <target document id>
-# Only when the document includes screenshots or other images; one entry per file
+# Only when the document includes screenshots, screen captures or other images; one entry per file
 media:
   - hash: sha256:<hex>
     title: <caption>
@@ -59,8 +59,7 @@ Part of [<parent feature title>](/<path to the parent feature>.md).
 <!--
 Background a newcomer needs to understand why this matters, in the product's words:
 - who asked for it, and why now;
-- the problem it solves, and how people cope today;
-- similar features in other products, when the user gave them (links).
+- the problem it solves, and how people cope today.
 Related documents: one plain link per `links` entry, e.g. "Related to [<title>](/<target-file>.md)."
 -->
 
@@ -79,6 +78,32 @@ Write "None found" when the user confirms there is nothing similar or related.
 | Existing feature | What it has in common | Decision |
 | ---------------- | --------------------- | -------- |
 | <name as people know it> | <overlap, shared pattern, or how they meet> | <distinct because… / intended overlap / follow its pattern for… / works with it by…> |
+
+### Similar features in other apps
+
+<!--
+Features in other apps or products that do something similar, given by the user as examples for this one
+(not features of this app, which are listed above). One sub-section per example, with:
+- what it does that is relevant here, in the user's words;
+- what this feature should take from it, and what it should not;
+- the user's screenshots and screen captures, shown in the document when stored in the bundle (listed in `media`),
+  linked when hosted elsewhere (listed in `media` with their URL);
+- links to the app, its help pages or demos (listed in `sources`).
+They illustrate the intent: the acceptance criteria, not the examples, say what this feature must do.
+Write "None" when the user confirms there are no examples.
+-->
+
+#### <App name>: <feature name>
+
+- **Relevant because:** <what it does that is close to this feature>
+- **Take from it:** <what this feature should do the same way>
+- **Not this:** <what this feature should not copy, or "Nothing noted">
+
+![<caption>](<path in the bundle>)
+
+*<caption: what it shows and why it matters>*
+
+- [<screen capture or page title>](<URL>): <what it shows>[^short-id]
 
 ## 4. Personas
 
@@ -158,7 +183,8 @@ See [<sub-feature title>](/<path to the sub-feature>.md).
 ## 9. Screenshots, mockups and prototypes
 
 <!--
-The visuals the user supplied, each with a caption saying what it shows and why it matters.
+The visuals the user supplied for this feature, each with a caption saying what it shows and why it matters
+(the screenshots of other apps go with their example in section 3).
 - Screenshots stored in the bundle are shown in the document, and listed in `media`.
 - Screenshots hosted elsewhere are linked, and listed in `media` with their URL.
 - Mockups and prototypes are linked (e.g. a design file or a clickable prototype), and listed in `sources`.

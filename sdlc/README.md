@@ -56,7 +56,7 @@ Listed in the order they're used:
 - `feature`: interviews the user to turn a vague feature request into a single feature document: the product requirements for exactly one feature.[^feature]
   - The document is AI-XF 0.5 markdown, a superset of OKF 0.2: intent, type, context, personas, outcomes, boundaries, rollout stages, acceptance criteria (grouped by stage), and the user's screenshots, mockups and prototypes.
   - It is written as by a non-technical product manager, with no technical assumption, and it adds nothing the user didn't confirm.
-  - It is checked against the similar or related features the app already has, to avoid unintended redundancy and to match their patterns.
+  - It is checked against the similar or related features the app already has, to avoid unintended redundancy and to match their patterns, and it asks for examples of similar features in other apps, with their screenshots, screen captures and links.
   - A feature can be split into sub-features, each delivering a stage of its rollout and linked to it as `part-of`: the feature is done when all its sub-features are done. Anything outside the feature is offered a separate feature document. Bug fixes get their own document, a bug report; refactorings are left to `specs`.
 - `specs`: interviews the user to turn a messy request into a single technical spec for exactly one feature, bug fix or refactoring.[^specs]
   - The spec is AI-XF 0.5 markdown, a superset of OKF 0.2.

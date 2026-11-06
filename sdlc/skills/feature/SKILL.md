@@ -1,6 +1,6 @@
 ---
 name: feature
-description: Interview the user to turn a vague, succinct feature request into a single feature document - the product requirements for exactly one feature (AI-XF 0.5 markdown, a superset of OKF 0.2) - written in a non-technical product manager's voice, with no technical assumption, checked against the similar or related features the app already has, and illustrated with the user's screenshots, mockups and prototypes. Use when the user asks to write, draft, create, or refine a feature document, a PRD, product requirements, a product brief or functional requirements for a feature, or invokes the feature skill directly (e.g. /sdlc:feature in Claude Code). Not for bug fixes or refactorings.
+description: Interview the user to turn a vague, succinct feature request into a single feature document - the product requirements for exactly one feature (AI-XF 0.5 markdown, a superset of OKF 0.2) - written in a non-technical product manager's voice, with no technical assumption, checked against the similar or related features the app already has, informed by the examples of similar features in other apps, and illustrated with the user's screenshots, mockups and prototypes. Use when the user asks to write, draft, create, or refine a feature document, a PRD, product requirements, a product brief or functional requirements for a feature, or invokes the feature skill directly (e.g. /sdlc:feature in Claude Code). Not for bug fixes or refactorings.
 ---
 
 # Feature
@@ -51,6 +51,20 @@ These are other features, tangentially related to this one; the feature's own [s
 
 Ask what you missed: the user often knows about features you couldn't see. Record the outcome in the Context section (see [template.md](template.md)); write "None found" only when the user confirms there is nothing similar or related. What you learnt from the code stays out of the document: only the feature names and behaviours people can see go in.
 
+## Similar features in other apps
+
+Features in other apps or products that do something similar, and that can serve as examples for the requested feature. They are not the similar or related features of this app: those are features the app already has, which the new feature must not duplicate by accident and whose patterns it should match; these are outside examples to learn from.
+
+Actively ask for them, early in the interview, rather than waiting for the user to bring them:
+
+1. **Ask which apps** do something similar, or that the user, the people in Personas or the person who asked for the feature like for this. You may suggest apps you know that have a similar feature, as a question; the user decides which ones are examples.
+2. **Ask for each example's visuals:** screenshots, screen captures (videos of the feature in use), and links (the app, its help pages, demos, articles). Ask for files as paths you can read, and for links where they are hosted. Ask again for the visuals of each example the user names, rather than once for all.
+3. **Ask what to take from each example, and what not:** the user says what this feature should do the same way, and what it should not copy. Never describe how another app behaves from your own knowledge: write only what the user confirms, or what the visuals show and the user confirms.
+4. **Include them in section 3,** one sub-section per example (see [template.md](template.md)): visuals stored in the bundle, hosted ones linked, and links listed in `sources`, as described in [Screenshots, mockups and prototypes](#screenshots-mockups-and-prototypes), including its privacy check.
+5. An example that does more than the agreed feature doesn't widen it: what it does beyond the feature is a side issue.
+
+Write "None" in that sub-section only when the user confirms there are no examples.
+
 ## Rollout
 
 Ask whether the feature reaches people in one go or in stages. For stages, agree on their order, what each delivers, who gets it (everyone, or a group of people such as invited customers or the staff), and when it is done, in product terms. The feature is done when every stage is done.
@@ -72,12 +86,12 @@ A sub-feature is part of its parent feature: the parent is done when all its sub
 
 Ask the user, once the feature is framed, whether they wish to add:
 
-- **screenshots** (of the app today, of another product, of a sketch): ask for the image files to upload, given as paths you can read, or for the links where they are hosted;
+- **screenshots** (of the app today, of a sketch; those of other apps are asked for with their [example](#similar-features-in-other-apps)): ask for the image files to upload, given as paths you can read, or for the links where they are hosted;
 - **mockups or prototypes**: ask for their links (e.g. a design file, a clickable prototype).
 
 Then:
 
-1. **Screenshots given as files are included in the document.** Propose where to store them in the bundle and confirm it with the user: follow the bundle's convention when it has one, otherwise a folder named after the document's `id`, next to it (e.g. `features/feature-csv-export/current-list.png`). Copy them there with short, descriptive names, show each one in section 9 as an image with a caption, and list it in `media` with its bundle path as `uri`, its caption as `title`, and its `hash` (`sha256:` followed by the output of `shasum -a 256 <file>`).
+1. **Screenshots given as files are included in the document.** Propose where to store them in the bundle and confirm it with the user: follow the bundle's convention when it has one, otherwise a folder named after the document's `id`, next to it (e.g. `features/feature-csv-export/current-list.png`). Copy them there with short, descriptive names, show each one as an image with a caption (in section 9, or with its example in section 3), and list it in `media` with its bundle path as `uri`, its caption as `title`, and its `hash` (`sha256:` followed by the output of `shasum -a 256 <file>`).
 2. **Screenshots hosted elsewhere are linked** in section 9, with a caption, and listed in `media` with their URL as `uri`.
 3. **Mockups and prototypes are linked** in section 9, with a line on what each shows, and listed in `sources`.
 4. Ask the user what each visual shows and why it matters, rather than describing it yourself; describe what you see only as a proposal to confirm. A visual that shows more than the agreed feature doesn't widen it: what it shows beyond the feature is a side issue.
@@ -106,8 +120,8 @@ The document is an [AI-XF 0.5](https://github.com/DavidROliverBA/ai-xf-format/bl
 | --- | --- |
 | `id` | `feature-<slug>`, same as the filename stem; unique in the bundle, never changed once assigned. |
 | `links` | Typed edges to related documents in the bundle: for a sub-feature, `part-of` its parent (see [Sub-features](#sub-features)); otherwise e.g. `relates-to` a separate feature document split off from this one, `references` an existing feature's document it follows the pattern of, `supersedes` a feature document it replaces. |
-| `media` | One entry per screenshot or other image in the document: `uri` (required: bundle path or URL), `hash` (`sha256:<hex>`, for files in the bundle) and `title` (its caption). |
-| `sources` | Requests, interviews, support tickets, mockups, prototypes, similar features in other products, user documentation. |
+| `media` | One entry per screenshot, screen capture or other image in the document: `uri` (required: bundle path or URL), `hash` (`sha256:<hex>`, for files in the bundle) and `title` (its caption). |
+| `sources` | Requests, interviews, support tickets, mockups, prototypes, links to similar features in other apps, user documentation. |
 | `type` | Always `Feature`, matching section 2. |
 
 ## Process
@@ -116,7 +130,7 @@ The document is an [AI-XF 0.5](https://github.com/DavidROliverBA/ai-xf-format/bl
 
 1. Read the user's prompt and any linked material (requests, tickets, screenshots, documents).
 2. Settle the [document location](#document-location), and read the existing documents there (their `index.md` first when there is one).
-3. Look for the [similar or related features in the app](#similar-or-related-features-in-the-app). Keep your findings to present in step 5.
+3. Look for the [similar or related features in the app](#similar-or-related-features-in-the-app). Keep your findings to present in step 5, and note any other app the input mentions as an example, for the interview.
 4. List every distinct subject you see in the input. For each, note whether it is a feature, a bug fix or a refactoring.
 5. Propose to the user:
    - a title for the document;
@@ -138,6 +152,7 @@ Work through the sections in order (see [template.md](template.md)), filling the
 - Unusual situations: propose the ones you can think of one at a time (or in small groups) with a suggested behaviour, and ask the user to confirm, correct or add to them: nothing to show yet, a mistake or a change of mind, missing permission, a limit reached, several people at once, no connection. Only the ones the user confirms become acceptance criteria.
 - [Rollout](#rollout): ask whether the feature ships in one go or in stages, and agree on the stages before the acceptance criteria, so that the criteria can be grouped by stage.
 - Acceptance criteria: derive the needs from the personas and the intent, propose them for validation, and agree on criteria in Given / When / Then form that anyone can check by using the product.
+- [Similar features in other apps](#similar-features-in-other-apps): ask for examples early, and for each one's screenshots, screen captures and links.
 - [Screenshots, mockups and prototypes](#screenshots-mockups-and-prototypes): ask whether the user wishes to add any.
 - When an answer reveals a new subject, treat it as a side issue (see Rules): don't widen the document.
 - Keep a running list of open questions. The interview is done when every section can be written without an assumption.
@@ -153,7 +168,7 @@ Work through the sections in order (see [template.md](template.md)), filling the
 ### 4. Review with the user
 
 1. Before writing the file, confirm its filename with the user, in the agreed [document location](#document-location).
-2. Write the file and copy the screenshots, then walk the user through the document section by section and ask for corrections.
+2. Write the file and copy the screenshots and screen captures, then walk the user through the document section by section and ask for corrections.
 3. Iterate until the user says the draft is ready for review. The document stays `status: draft`: approving its content is the reviewers' job, in the pull request.
 4. Update the bundle's `index.md` and `log.md` if they exist (or were created at the user's request), as described in the specs skill, and run the validator if available.
 5. Publish the draft as a pull request, following the [publishing section of the specs skill](../specs/SKILL.md#publishing), with this document and its screenshots in place of the spec (e.g. branch `docs/<document-id>`, commit `docs(features): add <document-id>`). Its description gives the feature's intent, a link to the file, the open questions and the side issues.
@@ -171,6 +186,7 @@ Before presenting the draft, check that:
 - [ ] Exactly one feature; no bug fix and no refactoring.
 - [ ] The intent fits in one to three sentences and a newcomer understands it.
 - [ ] Similar or related features in the app: each one found is listed with the user's decision (distinct, intended overlap, pattern followed, or how they work together), or "None found" is confirmed by the user.
+- [ ] Similar features in other apps: the user was asked for examples, and for each one's screenshots, screen captures and links; each example says what to take from it and what not, in the user's words; or "None" is confirmed by the user.
 - [ ] Every persona has at least one concrete gain or loss; negative impacts are stated, not hidden.
 - [ ] Every outcome is observable, and measurable where the user gave a measure.
 - [ ] Boundaries list what is explicitly out of scope, including the side issues left out.
