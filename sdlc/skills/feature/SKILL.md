@@ -71,6 +71,10 @@ Ask whether the feature reaches people in one go or in stages. For stages, agree
 
 Stages split the delivery of this one feature; they never bring in another feature. A stage delivers either part of this document's acceptance criteria, or a sub-feature. The acceptance criteria are grouped by stage when there are several (see [template.md](template.md)).
 
+## Deliverables
+
+Once the rollout is agreed, ask how the feature gets delivered, in very broad terms: what people receive at each stage, such as a new release of the app or of each library, a new version in the app stores, an update of the website, an announcement, or updated help pages. Deliverables can differ from one stage to the next: with several stages, agree on them stage by stage. Stay at that level: which parts are built, and how, are left to the technical spec.
+
 ## Sub-features
 
 A sub-feature is part of its parent feature: the parent is done when all its sub-features are done. It is not a similar or related feature: those are other features, tangentially related, recorded in the Context section; sub-features are recorded in the parent's Rollout.
@@ -91,13 +95,13 @@ Ask the user, once the feature is framed, whether they wish to add:
 
 Then:
 
-1. **Screenshots given as files are included in the document.** Propose where to store them in the bundle and confirm it with the user: follow the bundle's convention when it has one, otherwise a folder named after the document's `id`, next to it (e.g. `features/feature-csv-export/current-list.png`). Copy them there with short, descriptive names, show each one as an image with a caption (in section 9, or with its example in section 3), and list it in `media` with its bundle path as `uri`, its caption as `title`, and its `hash` (`sha256:` followed by the output of `shasum -a 256 <file>`).
-2. **Screenshots hosted elsewhere are linked** in section 9, with a caption, and listed in `media` with their URL as `uri`.
-3. **Mockups and prototypes are linked** in section 9, with a line on what each shows, and listed in `sources`.
+1. **Screenshots given as files are included in the document.** Propose where to store them in the bundle and confirm it with the user: follow the bundle's convention when it has one, otherwise a folder named after the document's `id`, next to it (e.g. `features/feature-csv-export/current-list.png`). Copy them there with short, descriptive names, show each one as an image with a caption (in section 10, or with its example in section 3), and list it in `media` with its bundle path as `uri`, its caption as `title`, and its `hash` (`sha256:` followed by the output of `shasum -a 256 <file>`).
+2. **Screenshots hosted elsewhere are linked** in section 10, with a caption, and listed in `media` with their URL as `uri`.
+3. **Mockups and prototypes are linked** in section 10, with a line on what each shows, and listed in `sources`.
 4. Ask the user what each visual shows and why it matters, rather than describing it yourself; describe what you see only as a proposal to confirm. A visual that shows more than the agreed feature doesn't widen it: what it shows beyond the feature is a side issue.
 5. Before copying a screenshot into the bundle, check with the user that it shows nothing private (names, emails, customer data) that shouldn't be published with the document.
 
-Write "None" in section 9 only when the user confirms there are no visuals.
+Write "None" in section 10 only when the user confirms there are no visuals.
 
 ## Live draft
 
@@ -164,6 +168,7 @@ Work through the sections in order (see [template.md](template.md)), filling the
 - When the user answers in technical terms, ask what people will do or see as a result, and write that instead; ask whether the technical point itself is a requirement (see Rules).
 - Unusual situations: propose the ones you can think of one at a time (or in small groups) with a suggested behaviour, and ask the user to confirm, correct or add to them: nothing to show yet, a mistake or a change of mind, missing permission, a limit reached, several people at once, no connection. Only the ones the user confirms become acceptance criteria.
 - [Rollout](#rollout): ask whether the feature ships in one go or in stages, and agree on the stages before the acceptance criteria, so that the criteria can be grouped by stage.
+- [Deliverables](#deliverables): once the stages are agreed, ask what each one delivers, in broad terms.
 - Acceptance criteria: derive the needs from the personas and the intent, propose them for validation, and agree on criteria in Given / When / Then form that anyone can check by using the product.
 - [Similar features in other apps](#similar-features-in-other-apps): ask for examples early, and for each one's screenshots, screen captures and links.
 - [Screenshots, mockups and prototypes](#screenshots-mockups-and-prototypes): ask whether the user wishes to add any.
@@ -205,6 +210,7 @@ Before presenting the draft, check that:
 - [ ] Every outcome is observable, and measurable where the user gave a measure.
 - [ ] Boundaries list what is explicitly out of scope, including the side issues left out.
 - [ ] Rollout: one sub-section per stage when there are several, each saying what it delivers, who gets it and when it is done.
+- [ ] Deliverables: in broad terms, what people receive; one sub-section per stage when there are several, matching Rollout.
 - [ ] Sub-features: each one is a stage (or part of a stage) of the parent's rollout, linked from it once its document exists; a sub-feature document has a `part-of` link to its parent and the line `Part of [<parent title>](/<path to the parent>.md).` in section 2. No sub-feature is listed among the similar or related features.
 - [ ] Every acceptance criterion names a persona from section 4, is in Given / When / Then form, can be checked by using the product, and, with several stages, sits under the stage that delivers it.
 - [ ] Screenshots, mockups and prototypes: every screenshot file is in the bundle, shown in the document and listed in `media` with its hash; every hosted screenshot, mockup and prototype is linked; or "None" is confirmed by the user.

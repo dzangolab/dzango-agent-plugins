@@ -54,7 +54,7 @@ Agent skills for the software development life cycle (product requirements, tech
 Listed in the order they're used:
 
 - `feature`: interviews the user to turn a vague feature request into a single feature document: the product requirements for exactly one feature.[^feature]
-  - The document is AI-XF 0.5 markdown, a superset of OKF 0.2: intent, type, context, personas, outcomes, boundaries, rollout stages, acceptance criteria (grouped by stage), and the user's screenshots, mockups and prototypes.
+  - The document is AI-XF 0.5 markdown, a superset of OKF 0.2: intent, type, context, personas, outcomes, boundaries, rollout stages, deliverables, acceptance criteria (grouped by stage), and the user's screenshots, mockups and prototypes.
   - The document is drafted as the interview goes: it is created once the feature is framed and updated after each confirmed answer, so the user can follow it in a markdown preview.
   - It is written as by a non-technical product manager, with no technical assumption, and it adds nothing the user didn't confirm.
   - It is checked against the similar or related features the app already has, to avoid unintended redundancy and to match their patterns, and it asks for examples of similar features in other apps, with their screenshots, screen captures and links.

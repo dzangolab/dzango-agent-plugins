@@ -156,7 +156,25 @@ A sub-feature not written yet is named without a link; the link is added once it
 - **Who gets it:** <everyone, or which group of people>
 - **Done when:** <condition anyone can check>
 
-## 8. Acceptance criteria
+## 8. Deliverables
+
+<!--
+In very broad terms, how the feature gets delivered: what people receive, not how it is built.
+Examples: a new release of the app or of each library, a new version in the app stores, an update of the website,
+an announcement, updated help pages.
+Single stage: a plain list. Several stages: one sub-section per stage of section 7, in the same order,
+each listing what that stage delivers.
+-->
+
+### Stage 1: <name>
+
+- <deliverable>
+
+### Stage 2: <name>
+
+- <deliverable>
+
+## 9. Acceptance criteria
 
 <!--
 One group per need, each for a persona from section 4, in the order people meet them.
@@ -180,7 +198,7 @@ As a <persona>, I want <capability>, so that <benefit>.
 
 See [<sub-feature title>](/<path to the sub-feature>.md).
 
-## 9. Screenshots, mockups and prototypes
+## 10. Screenshots, mockups and prototypes
 
 <!--
 The visuals the user supplied for this feature, each with a caption saying what it shows and why it matters
