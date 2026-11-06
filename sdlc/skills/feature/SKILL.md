@@ -1,6 +1,6 @@
 ---
 name: feature
-description: Interview the user to turn a vague, succinct feature request into a single feature document - the product requirements for exactly one feature (AI-XF 0.5 markdown, a superset of OKF 0.2) - written in a non-technical product manager's voice, with no technical assumption, checked against the similar or related features the app already has, informed by the examples of similar features in other apps, and illustrated with the user's screenshots, mockups and prototypes. Use when the user asks to write, draft, create, or refine a feature document, a PRD, product requirements, a product brief or functional requirements for a feature, or invokes the feature skill directly (e.g. /sdlc:feature in Claude Code). Not for bug fixes or refactorings.
+description: Interview the user to turn a vague, succinct feature request into a single feature document - the product requirements for exactly one feature (AI-XF 0.5 markdown, a superset of OKF 0.2) - written in a non-technical product manager's voice, with no technical assumption, checked against the similar or related features the app already has, informed by the examples of similar features in other apps, and illustrated with the user's screenshots, mockups and prototypes. The document is drafted live as the interview goes, so the user can follow it. Use when the user asks to write, draft, create, or refine a feature document, a PRD, product requirements, a product brief or functional requirements for a feature, or invokes the feature skill directly (e.g. /sdlc:feature in Claude Code). Not for bug fixes or refactorings.
 ---
 
 # Feature
@@ -99,6 +99,18 @@ Then:
 
 Write "None" in section 9 only when the user confirms there are no visuals.
 
+## Live draft
+
+The document is written as the interview goes, not at the end, so the user can follow it being created and updated.
+
+- **Create it as soon as the feature is framed:** once the user has confirmed the feature, its intent and the filename (see [Process](#process)), write the file with the frontmatter (`status: draft`), the title, the confirmed intent, the Type section, and every other section of [template.md](template.md) as a heading followed by `> **Pending:** not discussed yet.` Tell the user the file's path, and suggest opening it in a markdown preview that refreshes on change (e.g. the preview of their editor), so they can follow along.
+- **Update it after each confirmed answer:** as soon as the user confirms an answer, write it into its section, replacing the section's pending marker, and keep the rest of the document consistent with it (e.g. a persona renamed everywhere). Copy each screenshot or screen capture into the bundle as soon as the user has given it and passed the privacy check. Tell the user in one short line which section changed.
+- **Only confirmed content:** the file shows the state of the agreement, never your proposals. A proposal, an option the user hasn't chosen or an unconfirmed inference stays in the conversation until the user says yes.
+- **Corrections go straight into the file:** when the user changes an earlier answer, update the section at once, and any other section it affects.
+- **Edits made by the user:** the user may edit the file while it is being drafted. Read it again before each update and keep their edits; when an edit contradicts an earlier answer or a rule (e.g. technical content), raise it rather than overwriting it.
+- **Pending and open are different:** `> **Pending:** …` marks a section not discussed yet, and must be gone when the interview ends; `> **Open question:** …` marks a question the user chose to defer, and stays.
+- **Not published while drafting:** the file stays in the working copy, uncommitted, until the user says the draft is ready for review (see [Process](#process)); `generated.at` is set when the file is created and updated when the draft is finished.
+
 ## Document location
 
 Settle the folder the feature documents live in before writing anything: it is the AI-XF bundle, and the existing documents in it are needed to spot similar or related features, related documents and contradictions, and to keep `id`s unique.
@@ -138,11 +150,12 @@ The document is an [AI-XF 0.5](https://github.com/DavidROliverBA/ai-xf-format/bl
    - the similar or related features you found, with your questions about them;
    - the side issues you identified (other features, bug fixes, refactorings), asking for each: separate document or later discussion;
    - when the request already looks too large for one document, a split into [sub-features](#sub-features).
-6. Do not continue until the user confirms the feature and its intent. The title is a working title: propose a better one whenever the discussion sharpens the subject, and confirm the final title before writing the file.
+6. Do not continue until the user confirms the feature and its intent. The title is a working title: propose a better one whenever the discussion sharpens the subject.
+7. Confirm the filename with the user, in the agreed [document location](#document-location), and [create the document](#live-draft) right away.
 
 ### 2. Interview
 
-Work through the sections in order (see [template.md](template.md)), filling the gaps with questions.
+Work through the sections in order (see [template.md](template.md)), filling the gaps with questions, and [update the document](#live-draft) as each answer is confirmed.
 
 - Ask one question at a time by preference, and never more than 3 at a time; this applies to every step, including framing and review. Use your structured question tool (e.g. `AskUserQuestion` in Claude Code) when the answer is a choice between concrete options; use plain questions for open-ended context.
 - Offer your proposed answer where you have one, so the user can just confirm or correct it.
@@ -155,24 +168,25 @@ Work through the sections in order (see [template.md](template.md)), filling the
 - [Similar features in other apps](#similar-features-in-other-apps): ask for examples early, and for each one's screenshots, screen captures and links.
 - [Screenshots, mockups and prototypes](#screenshots-mockups-and-prototypes): ask whether the user wishes to add any.
 - When an answer reveals a new subject, treat it as a side issue (see Rules): don't widen the document.
-- Keep a running list of open questions. The interview is done when every section can be written without an assumption.
+- Keep a running list of open questions. The interview is done when every section is written without an assumption and no section is still marked pending.
 
-### 3. Draft
+### 3. Finish the draft
 
-1. Write the document following [template.md](template.md) exactly: same frontmatter, same sections, same order. Set `status: draft`.
+The document already holds every confirmed answer. Go over it as a whole:
+
+1. Check that it follows [template.md](template.md) exactly: same frontmatter, same sections, same order, `status: draft`, and no section still marked pending.
 2. Every statement must be specific and checkable by someone using the product. If it can't be, rewrite it or ask.
 3. Read it as the people in Personas would: rewrite any word they wouldn't use.
-4. Read it as the author of the technical spec would: list every product question the spec would still have to ask, and ask the user each one before writing the file (see Rules).
+4. Read it as the author of the technical spec would: list every product question the spec would still have to ask, and ask the user each one (see Rules).
 5. If the user explicitly chooses to defer a question, mark it inline as `> **Open question:** …`, never fill it with a guess.
 
 ### 4. Review with the user
 
-1. Before writing the file, confirm its filename with the user, in the agreed [document location](#document-location).
-2. Write the file and copy the screenshots and screen captures, then walk the user through the document section by section and ask for corrections.
-3. Iterate until the user says the draft is ready for review. The document stays `status: draft`: approving its content is the reviewers' job, in the pull request.
-4. Update the bundle's `index.md` and `log.md` if they exist (or were created at the user's request), as described in the specs skill, and run the validator if available.
-5. Publish the draft as a pull request, following the [publishing section of the specs skill](../specs/SKILL.md#publishing), with this document and its screenshots in place of the spec (e.g. branch `docs/<document-id>`, commit `docs(features): add <document-id>`). Its description gives the feature's intent, a link to the file, the open questions and the side issues.
-6. In your final reply, give the pull request's URL, and list:
+1. Walk the user through the document section by section, in the file they have been following, and ask for corrections.
+2. Iterate until the user says the draft is ready for review. The document stays `status: draft`: approving its content is the reviewers' job, in the pull request.
+3. Update the bundle's `index.md` and `log.md` if they exist (or were created at the user's request), as described in the specs skill, and run the validator if available.
+4. Publish the draft as a pull request, following the [publishing section of the specs skill](../specs/SKILL.md#publishing), with this document and its screenshots in place of the spec (e.g. branch `docs/<document-id>`, commit `docs(features): add <document-id>`). Its description gives the feature's intent, a link to the file, the open questions and the side issues.
+5. In your final reply, give the pull request's URL, and list:
    - any open questions left in the document;
    - the side issues and what the user decided for each (separate document / later discussion), so nothing is lost;
    - the sub-features agreed, with their stage, and which documents are still to be written;
@@ -195,6 +209,7 @@ Before presenting the draft, check that:
 - [ ] Every acceptance criterion names a persona from section 4, is in Given / When / Then form, can be checked by using the product, and, with several stages, sits under the stage that delivers it.
 - [ ] Screenshots, mockups and prototypes: every screenshot file is in the bundle, shown in the document and listed in `media` with its hash; every hosted screenshot, mockup and prototype is linked; or "None" is confirmed by the user.
 - [ ] Complete for the spec: the specs skill could write a complete, exhaustive technical spec from the document without asking a single product question; any deferred one is an open question in the document.
+- [ ] No `> **Pending:**` marker is left.
 - [ ] Nothing was added that the user didn't confirm.
 - [ ] No technology, component, architecture or code, and no technical assumption; any technical point is a functional requirement the user confirmed, in plain language.
 - [ ] A non-technical reader understands every sentence.
