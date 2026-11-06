@@ -1,5 +1,5 @@
 ---
-description: Agent skills for the software development life cycle (technical specs, designs, test plans, implementation plans), for Claude Code and other agents.
+description: Agent skills for the software development life cycle (product requirements, technical specs, designs, test plans, implementation plans), for Claude Code and other agents.
 generated:
   at: 2026-11-01T12:24:42Z
   by: claude-code/2.1.316
@@ -15,6 +15,9 @@ sources:
   - id: design
     resource: sdlc/skills/design/SKILL.md
     title: design skill
+  - id: feature
+    resource: sdlc/skills/feature/SKILL.md
+    title: feature skill
   - id: plan
     resource: sdlc/skills/plan/SKILL.md
     title: plan skill
@@ -44,12 +47,17 @@ type: Plugin
 
 Part of the [dzango-agent-plugins](../README.md) marketplace.
 
-Agent skills for the software development life cycle (technical specs, designs, test plans, implementation plans), for Claude Code and other agents.[^plugin]
+Agent skills for the software development life cycle (product requirements, technical specs, designs, test plans, implementation plans), for Claude Code and other agents.[^plugin]
 
 ## Skills
 
 Listed in the order they're used:
 
+- `feature`: interviews the user to turn a vague feature request into a single feature document: the product requirements for exactly one feature.[^feature]
+  - The document is AI-XF 0.5 markdown, a superset of OKF 0.2: intent, type, context, personas, outcomes, boundaries, rollout stages, acceptance criteria (grouped by stage), and the user's screenshots, mockups and prototypes.
+  - It is written as by a non-technical product manager, with no technical assumption, and it adds nothing the user didn't confirm.
+  - It is checked against the similar or related features the app already has, to avoid unintended redundancy and to match their patterns, and it asks for examples of similar features in other apps, with their screenshots, screen captures and links.
+  - A feature can be split into sub-features, each delivering a stage of its rollout and linked to it as `part-of`: the feature is done when all its sub-features are done. Anything outside the feature is offered a separate feature document. Bug fixes get their own document, a bug report; refactorings are left to `specs`.
 - `specs`: interviews the user to turn a messy request into a single technical spec for exactly one feature, bug fix or refactoring.[^specs]
   - The spec is AI-XF 0.5 markdown, a superset of OKF 0.2.
   - The skill first settles the codebase scope (a single repo, an app in a monorepo, or several repos) and the folder the specs live in.
@@ -71,9 +79,11 @@ Listed in the order they're used:
   - When a test plan exists for the spec, the constraint is that its tests pass: each test is assigned to a step, and they all pass after the last one.
   - A spec that isn't suitable is sent back to `specs`, on the user's go-ahead.
 
-All four skills publish their document as a draft in a pull request, and stop there. The pull request's review and merge approve it: on merge, the [okf-approve](https://github.com/dzangolab/okf-actions/tree/main/approve) GitHub Action, run by the repository that contains the documents, marks them `stable` and records who vouched for them, following the repository's rules.[^specs]
+All five skills publish their document as a draft in a pull request, and stop there. The pull request's review and merge approve it: on merge, the [okf-approve](https://github.com/dzangolab/okf-actions/tree/main/approve) GitHub Action, run by the repository that contains the documents, marks them `stable` and records who vouched for them, following the repository's rules.[^specs]
 
 ## Usage
+
+`feature` activates when you ask your agent to write a feature document, a PRD or the product requirements for a feature.[^feature] In Claude Code, invoke it directly with `/sdlc:feature <your request>`.
 
 Once the skills are installed, `specs` activates whenever you ask your agent to write, draft or refine a spec for a change.[^specs] In Claude Code, invoke it directly with `/sdlc:specs <your request>`.
 
@@ -104,6 +114,7 @@ The skills are plain [Agent Skills](https://agentskills.io) (a folder with a `SK
 
 ```
 npx skills add dzangolab/dzango-agent-plugins --skill design
+npx skills add dzangolab/dzango-agent-plugins --skill feature
 npx skills add dzangolab/dzango-agent-plugins --skill plan
 npx skills add dzangolab/dzango-agent-plugins --skill specs
 npx skills add dzangolab/dzango-agent-plugins --skill tests
@@ -111,6 +122,7 @@ npx skills add dzangolab/dzango-agent-plugins --skill tests
 
 [^agent-skills]: Agent Skills specification, https://agentskills.io
 [^design]: design skill, `sdlc/skills/design/SKILL.md`
+[^feature]: feature skill, `sdlc/skills/feature/SKILL.md`
 [^plan]: plan skill, `sdlc/skills/plan/SKILL.md`
 [^plugin]: sdlc plugin manifest, `sdlc/.claude-plugin/plugin.json`
 [^skills-cli]: skills CLI, https://github.com/vercel-labs/skills
