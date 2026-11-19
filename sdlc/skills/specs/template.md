@@ -1,6 +1,6 @@
 # Spec template
 
-Use these sections, in this order. Section guidance is in the HTML comments; remove the comments in the final document.
+Start with the header line under the title, then use these sections, in this order. Section guidance is in the HTML comments; remove the comments in the final document.
 
 ````markdown
 ---
@@ -8,21 +8,26 @@ description: <one-line summary of the intent>
 generated:
   at: <ISO 8601 datetime with UTC offset>
   by: <agent>/<version>
-id: <type>-<slug> # <feature-id>-spec when written from a feature document
+id: <type>-<slug> # <requirements-id>-spec when written from a requirements document
 # Only when related specs exist; mirror each one with a body link
 links:
   - note: <why they are related>
     rel: <depends-on | references | relates-to | supersedes>
     to: <target spec id>
+  # When written from a requirements document; mirrored under the title
+  - note: The requirements document this spec specifies.
+    rel: specifies
+    to: <requirements-id>
 sources:
   - id: <short-id>
     resource: <URL or path>
     title: <source title>
 status: draft
 tags:
+  - <feature | bug-fix | refactoring> # the subject type, as on the line under the title
   - <tag>
 title: <Title>
-type: <Feature | Bug fix | Refactoring>
+type: Technical specs
 # Added on merge by okf-approve, never by hand:
 # verified:
 #   - at: <ISO 8601 datetime with UTC offset>
@@ -31,15 +36,21 @@ type: <Feature | Bug fix | Refactoring>
 
 # <Title>
 
+<!-- The document type, then the subject type: exactly one of Feature | Bug fix | Refactoring -->
+
+**Technical specs** · **<Feature | Bug fix | Refactoring>**
+
+<!--
+For a spec written from a requirements document only: the document it specifies, mirroring the `specifies` link.
+-->
+
+Specifies [<requirements document title>](/<path to the requirements document>.md).
+
 ## 1. Intent
 
 <!-- One to three sentences: the purpose of this work and the outcome it delivers. -->
 
-## 2. Type
-
-<!-- Exactly one of: Feature | Bug fix | Refactoring -->
-
-## 3. Context
+## 2. Context
 
 <!--
 Background a newcomer needs to understand why this matters.
@@ -49,7 +60,7 @@ Background a newcomer needs to understand why this matters.
 Related specs: one plain link per `links` entry, e.g. "Depends on [<title>](/<target-file>.md)."
 -->
 
-## 4. Personas
+## 3. Personas
 
 <!--
 Everyone impacted, and how. Most impacts should be gains, but state losses honestly.
@@ -59,7 +70,7 @@ Everyone impacted, and how. Most impacts should be gains, but state losses hones
 | ------- | ------ | ----- | ------ |
 | <name>  | Positive / Negative / Mixed | <concrete gain> | <concrete loss, or "None"> |
 
-## 5. Constraints
+## 4. Constraints
 
 <!--
 Hard requirements that must be met; each one verifiable.
@@ -68,7 +79,7 @@ Examples: "No new feature", "Public API unchanged", "Response time ≤ 200 ms at
 
 - <constraint>
 
-## 6. Boundaries
+## 5. Boundaries
 
 <!--
 What is explicitly not included / out of scope, including related ideas the user chose to defer.
@@ -76,7 +87,7 @@ What is explicitly not included / out of scope, including related ideas the user
 
 - <out-of-scope item>
 
-## 7. Edge cases
+## 6. Edge cases
 
 <!--
 Unusual, boundary and failure situations, and the expected behaviour for each: empty, missing or invalid input,
@@ -88,10 +99,10 @@ Every expected behaviour must be verifiable.
 | --------- | ------------------ |
 | <situation> | <what must happen> |
 
-## 8. User stories
+## 7. User stories
 
 <!--
-One story per need, written for a persona from section 4, each with acceptance criteria in Given / When / Then form.
+One story per need, written for a persona from section 3, each with acceptance criteria in Given / When / Then form.
 Reference formal requirement IDs when the story derives from one.
 - Feature: the stories the feature delivers.
 - Bug fix: the story the bug breaks, with acceptance criteria describing the expected (fixed) behaviour.
@@ -106,7 +117,7 @@ As a <persona>, I want <capability>, so that <benefit>.
 
 - **Given** <context>, **when** <action>, **then** <outcome>.
 
-## 9. Rollout
+## 8. Rollout
 
 <!--
 How the change reaches users or production. Single phase: describe it directly, without sub-sections.
@@ -126,7 +137,7 @@ Multiple phases: one sub-section per phase, in delivery order. For each phase: w
 - **Audience:** <who gets it, and how it is switched on>
 - **Exit criteria:** <verifiable condition to finish the rollout>
 
-## 10. Prerequisites
+## 9. Prerequisites
 
 <!--
 What must be true or done before work on a phase can start: other specs delivered (also listed in `links` as
@@ -143,7 +154,7 @@ Write "None" when nothing is required for a phase.
 
 - <prerequisite, or "None">
 
-## 11. User journey
+## 10. User journey
 
 <!--
 Title this section "User journey" when a user is involved, "Workflow" otherwise.
@@ -161,7 +172,7 @@ flowchart TD
   B -- no --> D[Alternative outcome]
 ```
 
-## 12. Blast radius
+## 11. Blast radius
 
 <!--
 For existing systems: the components likely to be impacted, and in what way.

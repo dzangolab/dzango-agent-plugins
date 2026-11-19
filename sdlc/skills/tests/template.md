@@ -21,6 +21,7 @@ sources:
     title: <source title>
 status: draft
 tags:
+  - <feature | bug-fix | refactoring> # the spec's subject type, as on the line under the title
   - <tag>
 title: "Test plan: <spec title>"
 type: Test plan
@@ -32,16 +33,19 @@ type: Test plan
 
 # Test plan: <spec title>
 
+<!-- The document type, then the spec's subject type -->
+
+**Test plan** · **<Feature | Bug fix | Refactoring>**
+
 ## 1. Scope
 
 <!--
-The spec under test, its type, what this plan proves in one or two sentences, and the codebase scope: one bullet per
+The spec under test, what this plan proves in one or two sentences, and the codebase scope: one bullet per
 repository (with the app or package path in a monorepo), "Not analysed: <reason>" instead of the branch and commit
 for a repository left out or not reachable.
 -->
 
 - **Spec:** [<spec title>](/<spec-file>.md)
-- **Spec type:** <Feature | Bug fix | Refactoring>
 - **Proves:** <one or two sentences>
 - **Codebase scope:**
   - <repository>[/<app or package path>] @ <branch> (<short commit>)

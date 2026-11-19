@@ -27,6 +27,7 @@ sources:
     title: <source title>
 status: draft
 tags:
+  - <feature | bug-fix | refactoring> # the spec's subject type, as on the line under the title
   - <tag>
 title: "Implementation plan: <spec title>"
 type: Implementation plan
@@ -38,10 +39,14 @@ type: Implementation plan
 
 # Implementation plan: <spec title>
 
+<!-- The document type, then the spec's subject type -->
+
+**Implementation plan** · **<Feature | Bug fix | Refactoring>**
+
 ## 1. Scope
 
 <!--
-The spec, its type, what the plan delivers in one or two sentences, the test plan, and the codebase scope: one bullet
+The spec, what the plan delivers in one or two sentences, the test plan, and the codebase scope: one bullet
 per repository (with the app or package path in a monorepo), "Not analysed: <reason>" instead of the branch and commit
 for a repository left out or not reachable.
 Constraint with a test plan: "All the tests in the test plan pass at the end of the last step."
@@ -49,7 +54,6 @@ Without one: Test plan "None", and Constraint "Every step's Verification passes.
 -->
 
 - **Spec:** [<spec title>](/<spec-file>.md)
-- **Spec type:** <Feature | Bug fix | Refactoring>
 - **Delivers:** <one or two sentences>
 - **Test plan:** [<test plan title>](/<test-plan-file>.md)
 - **Constraint:** All the tests in the test plan pass at the end of the last step.

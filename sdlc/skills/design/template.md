@@ -21,6 +21,7 @@ sources:
     title: <source title>
 status: draft
 tags:
+  - <feature | bug-fix | refactoring> # the spec's subject type, as on the line under the title
   - <tag>
 title: "Design: <spec title>"
 type: Design
@@ -32,6 +33,10 @@ type: Design
 
 # Design: <spec title>
 
+<!-- The document type, then the spec's subject type -->
+
+**Design** · **<Feature | Bug fix | Refactoring>**
+
 ## 1. Scope
 
 <!--
@@ -42,7 +47,6 @@ Assumptions: only for a spec not written by the specs skill, when the user chose
 -->
 
 - **Spec:** [<spec title>](/<spec-file>.md)
-- **Spec type:** <Feature | Bug fix | Refactoring>
 - **Sub-system grain:** <Container | Software system | Component>
 - **Codebase scope:**
   - <repository>[/<app or package path>] @ <branch> (<short commit>)
