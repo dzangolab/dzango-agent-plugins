@@ -45,7 +45,7 @@ Right after the codebase scope (or first, outside a codebase), settle the folder
 
 1. Infer candidates, in this order:
    - an AI-XF bundle already in or around the scope: a folder with a `manifest.ai-xf.yaml`;
-   - a folder that already holds specs: markdown files with spec frontmatter (`type: Feature`, `Bug fix` or `Refactoring`), in the current folder or a sub-folder (`specs/`, `docs/specs/`, or any other);
+   - a folder that already holds specs: markdown files with spec frontmatter (`type: Technical specs`, or, in older bundles, `Feature`, `Bug fix` or `Refactoring`), in the current folder or a sub-folder (`specs/`, `docs/specs/`, or any other);
    - a spec folder convention stated in the project (agent instructions such as `AGENTS.md`, `CLAUDE.md` or `GEMINI.md`, `README.md`, contributing guide);
    - for a scope with several repositories, the same signs in the folder that holds them (e.g. a `specs/` folder next to the repositories), since the specs then span repositories.
 2. Always confirm with the user: propose the best candidate, and mention the others when there are several.
@@ -64,12 +64,12 @@ Frontmatter (keys in alphabetical order):
 | `description` | Recommended | One-line summary of the intent. |
 | `generated` | Yes (trust field, satisfies Level 2) | `by: <agent>/<version>`, the agent writing the spec and its version (e.g. `claude-code/2.1.314` from `claude --version`), `at: <ISO 8601 datetime>`. |
 | `id` | Yes (Level 1) | Lowercase, words separated by `-`, no `/`, unique in the bundle; same as the filename stem (`<type>-<slug>`, or `<feature-id>-spec` for a spec written from a feature document). Never change it once assigned, even if the file is renamed or moved. |
-| `links` | When related specs exist | Typed edges `{rel, to, note}`; `to` is the target's `id`. Typical `rel`: `depends-on`, `references`, `relates-to` (e.g. a side issue split into its own spec), `supersedes`. |
+| `links` | When related documents exist | Typed edges `{rel, to, note}`; `to` is the target's `id`. Typical `rel`: `depends-on`, `references`, `relates-to` (e.g. a side issue split into its own spec), `specifies`, `supersedes`. A spec written from a feature document always has a `specifies` link to it, mirrored in section 2 (see [template.md](template.md)): the spec says how the feature document's requirements are built. |
 | `sources` | When there are sources | List of `{id, resource, title}`; `resource` is required (absolute URL, `/`-prefixed bundle path, or relative path). Use for functional requirements, issues, similar features in other apps, screenshots, logs. |
 | `status` | Yes | `draft` until its pull request is merged (see [Publishing](#publishing)); `stable` after; `deprecated` for a tombstone. |
 | `tags` | Recommended | Short strings: area, module, product. |
 | `title` | Recommended | The spec title, identical to the H1. |
-| `type` | **Required** (Level 0) | Exactly one of `Feature`, `Bug fix`, `Refactoring`, matching section 2. |
+| `type` | **Required** (Level 0) | Always `Technical specs`. The kind of change (`Feature`, `Bug fix` or `Refactoring`) goes in section 2. |
 | `verified` | Added on merge, never by you | One entry per reviewer who approved the pull request, or for the person who merged it when nobody did: `- at: <ISO 8601 datetime>`, `by: human:<GitHub login>`. |
 
 Rules to respect:
@@ -193,4 +193,4 @@ Before presenting the draft, check that:
 - [ ] No unjustified coupling between components: every dependency the spec introduces or relies on has a reason the user validated.
 - [ ] No implementation plan, task list or code.
 - [ ] Nothing in the spec is an unvalidated assumption.
-- [ ] AI-XF Level 2: frontmatter is parseable YAML with a non-empty `type` matching section 2 and a unique, well-formed `id`; `generated` is present; every `links` entry has `rel` and a resolvable `to`, mirrored by a body link; timestamps have a UTC offset; footnotes match `sources[].id`; the filename isn't `index.md` or `log.md`; the bundle has `manifest.ai-xf.yaml`.
+- [ ] AI-XF Level 2: frontmatter is parseable YAML with `type: Technical specs` and a unique, well-formed `id`; section 2 gives the kind of change; a spec written from a feature document has a `specifies` link to it, mirrored in section 2; `generated` is present; every `links` entry has `rel` and a resolvable `to`, mirrored by a body link; timestamps have a UTC offset; footnotes match `sources[].id`; the filename isn't `index.md` or `log.md`; the bundle has `manifest.ai-xf.yaml`.

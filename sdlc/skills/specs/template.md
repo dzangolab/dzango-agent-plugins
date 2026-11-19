@@ -14,6 +14,10 @@ links:
   - note: <why they are related>
     rel: <depends-on | references | relates-to | supersedes>
     to: <target spec id>
+  # When written from a feature document; mirrored in section 2
+  - note: The feature document this spec specifies.
+    rel: specifies
+    to: <feature-id>
 sources:
   - id: <short-id>
     resource: <URL or path>
@@ -22,7 +26,7 @@ status: draft
 tags:
   - <tag>
 title: <Title>
-type: <Feature | Bug fix | Refactoring>
+type: Technical specs
 # Added on merge by okf-approve, never by hand:
 # verified:
 #   - at: <ISO 8601 datetime with UTC offset>
@@ -38,6 +42,14 @@ type: <Feature | Bug fix | Refactoring>
 ## 2. Type
 
 <!-- Exactly one of: Feature | Bug fix | Refactoring -->
+
+<Feature | Bug fix | Refactoring>
+
+<!--
+For a spec written from a feature document only: the document it specifies, mirroring the `specifies` link.
+-->
+
+Specifies [<feature document title>](/<path to the feature document>.md).
 
 ## 3. Context
 

@@ -31,7 +31,7 @@ status: draft
 tags:
   - <tag>
 title: <Title>
-type: Feature
+type: Functional requirements
 # Added on merge by okf-approve, never by hand:
 # verified:
 #   - at: <ISO 8601 datetime with UTC offset>

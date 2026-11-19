@@ -121,12 +121,12 @@ Settle the folder the feature documents live in before writing anything: it is t
 
 1. Infer candidates, in this order:
    - an AI-XF bundle already in or around the project: a folder with a `manifest.ai-xf.yaml`, such as the folder of the specs;
-   - a folder that already holds feature documents or specs (markdown files with `type: Feature`, `Bug fix` or `Refactoring` frontmatter);
+   - a folder that already holds feature documents or specs (markdown files with `type: Functional requirements` or `Technical specs` frontmatter, or, in older bundles, `Feature`, `Bug fix` or `Refactoring`);
    - a convention stated in the project (agent instructions such as `AGENTS.md`, `CLAUDE.md` or `GEMINI.md`, `README.md`, contributing guide).
 2. Always confirm with the user: propose the best candidate, and mention the others when there are several. Within a bundle, propose the folder that already holds the documents about features (e.g. `features/`), unless the bundle has another convention.
 3. If you find no suitable candidate, ask the user where the feature documents should live; don't pick a default.
 
-The document goes in the agreed folder as `feature-<slug>.md`, unless the folder already follows another naming convention. Check that no other document in the bundle already has that `id`. The technical spec written from it with the specs skill goes next to it as `<id>-spec.md`, so the two never share a name.
+The document goes in the agreed folder as `feature-<slug>.md`, unless the folder already follows another naming convention. Check that no other document in the bundle already has that `id`. The technical spec written from it with the specs skill goes next to it as `<id>-spec.md`, so the two never share a name, and links to it as `specifies`.
 
 ## AI-XF format
 
@@ -138,7 +138,7 @@ The document is an [AI-XF 0.5](https://github.com/DavidROliverBA/ai-xf-format/bl
 | `links` | Typed edges to related documents in the bundle: for a sub-feature, `part-of` its parent (see [Sub-features](#sub-features)); otherwise e.g. `relates-to` a separate feature document split off from this one, `references` an existing feature's document it follows the pattern of, `supersedes` a feature document it replaces. |
 | `media` | One entry per screenshot, screen capture or other image in the document: `uri` (required: bundle path or URL), `hash` (`sha256:<hex>`, for files in the bundle) and `title` (its caption). |
 | `sources` | Requests, interviews, support tickets, mockups, prototypes, links to similar features in other apps, user documentation. |
-| `type` | Always `Feature`, matching section 2. |
+| `type` | Always `Functional requirements`. Section 2 says it's a feature. |
 
 ## Process
 
@@ -221,4 +221,4 @@ Before presenting the draft, check that:
 - [ ] A non-technical reader understands every sentence.
 - [ ] The document is in the location the user confirmed.
 - [ ] The document is `status: draft`, with no new `verified` entry: only the merge of its pull request makes it `stable`.
-- [ ] AI-XF Level 2: frontmatter is parseable YAML with `type: Feature` and a unique, well-formed `id`; `generated` is present; every `links` entry has `rel` and a resolvable `to`, mirrored by a body link; every `media` entry has a `uri`; timestamps have a UTC offset; footnotes match `sources[].id`; the filename isn't `index.md` or `log.md`; the bundle has `manifest.ai-xf.yaml`.
+- [ ] AI-XF Level 2: frontmatter is parseable YAML with `type: Functional requirements` and a unique, well-formed `id`; `generated` is present; every `links` entry has `rel` and a resolvable `to`, mirrored by a body link; every `media` entry has a `uri`; timestamps have a UTC offset; footnotes match `sources[].id`; the filename isn't `index.md` or `log.md`; the bundle has `manifest.ai-xf.yaml`.
