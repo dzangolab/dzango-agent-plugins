@@ -217,6 +217,19 @@ Write "None" when the user confirms there are none.
 - [<screenshot title>](<URL>): <what it shows>
 - [<mockup or prototype title>](<URL>): <what it shows>[^short-id]
 
+## 11. Open questions
+
+<!--
+The questions the user chose to defer that no single section can answer yet, such as whether another feature
+is needed first. A question tied to one section stays in that section, as `> **Open question:** …`.
+Each one in bold, followed by why it is deferred and when or how it will be decided.
+Write "None" when there are none.
+-->
+
+Questions that no single section can answer yet. A question tied to one section stays in that section.
+
+- **<question>?** <why it is deferred, and when or how it will be decided>
+
 <!-- Footnotes: one per cited source, label = sources[].id -->
 
 [^short-id]: <source title>, <URL or path>
