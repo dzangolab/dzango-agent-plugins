@@ -62,6 +62,7 @@ Listed in the order they're used:
 - `specs`: interviews the user to turn a messy request into a single technical spec for exactly one feature, bug fix or refactoring.[^specs]
   - The spec is AI-XF 0.5 markdown, a superset of OKF 0.2.
   - The skill first settles the codebase scope (a single repo, an app in a monorepo, or several repos) and the folder the specs live in.
+  - The spec is drafted live: it is created once the subject is framed, the skill writes its proposals in the document rather than in the chat, and each step the user approves is committed and pushed to a draft pull request; a rejected proposal is reverted or revised.
 - `design`: proposes a design for a given spec, as an architecture document made mainly of C4 diagrams in Mermaid.[^design]
   - It identifies all the sub-systems involved, in a System context and a Container diagram, with Component and Deployment diagrams where needed.
   - Each user story gets a dynamic diagram of the workflow between the sub-systems.
