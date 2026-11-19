@@ -51,7 +51,7 @@ Right after the codebase scope (or first, outside a codebase), settle the folder
 2. Always confirm with the user: propose the best candidate, and mention the others when there are several.
 3. If you find no suitable candidate, ask the user where the specs should live; don't pick a default.
 
-The spec file goes in the agreed folder as `<type>-<slug>.md`, where `<type>` is `feature`, `bugfix` or `refactoring`, unless the folder already follows another naming convention.
+The spec file goes in the agreed folder as `<type>-<slug>.md`, where `<type>` is `feature`, `bugfix` or `refactoring`, unless the folder already follows another naming convention. A spec written from a feature document (such as one written by the [feature skill](../feature/SKILL.md)) is named after it instead, as `<feature-id>-spec.md`, next to it (e.g. `features/feature-csv-export-spec.md` for `features/feature-csv-export.md`): the two files never share a name, and the spec's name shows which feature document it implements.
 
 ## AI-XF format
 
@@ -63,7 +63,7 @@ Frontmatter (keys in alphabetical order):
 | --- | --- | --- |
 | `description` | Recommended | One-line summary of the intent. |
 | `generated` | Yes (trust field, satisfies Level 2) | `by: <agent>/<version>`, the agent writing the spec and its version (e.g. `claude-code/2.1.314` from `claude --version`), `at: <ISO 8601 datetime>`. |
-| `id` | Yes (Level 1) | Lowercase, words separated by `-`, no `/`, unique in the bundle; same as the filename stem (`<type>-<slug>`). Never change it once assigned, even if the file is renamed or moved. |
+| `id` | Yes (Level 1) | Lowercase, words separated by `-`, no `/`, unique in the bundle; same as the filename stem (`<type>-<slug>`, or `<feature-id>-spec` for a spec written from a feature document). Never change it once assigned, even if the file is renamed or moved. |
 | `links` | When related specs exist | Typed edges `{rel, to, note}`; `to` is the target's `id`. Typical `rel`: `depends-on`, `references`, `relates-to` (e.g. a side issue split into its own spec), `supersedes`. |
 | `sources` | When there are sources | List of `{id, resource, title}`; `resource` is required (absolute URL, `/`-prefixed bundle path, or relative path). Use for functional requirements, issues, similar features in other apps, screenshots, logs. |
 | `status` | Yes | `draft` until its pull request is merged (see [Publishing](#publishing)); `stable` after; `deprecated` for a tombstone. |
