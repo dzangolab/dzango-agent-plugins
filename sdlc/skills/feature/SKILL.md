@@ -183,7 +183,7 @@ The document already holds every confirmed answer. Go over it as a whole:
 2. Every statement must be specific and checkable by someone using the product. If it can't be, rewrite it or ask.
 3. Read it as the people in Personas would: rewrite any word they wouldn't use.
 4. Read it as the author of the technical spec would: list every product question the spec would still have to ask, and ask the user each one (see Rules).
-5. If the user explicitly chooses to defer a question, mark it inline as `> **Open question:** …`, never fill it with a guess.
+5. If the user explicitly chooses to defer a question, never fill it with a guess: mark it inline as `> **Open question:** …` in the section it belongs to, or, when no single section can answer it (e.g. whether another feature is needed first), list it in section 11. Write "None" in section 11 when no such question is left.
 
 ### 4. Review with the user
 
@@ -214,7 +214,7 @@ Before presenting the draft, check that:
 - [ ] Sub-features: each one is a stage (or part of a stage) of the parent's rollout, linked from it once its document exists; a sub-feature document has a `part-of` link to its parent and the line `Part of [<parent title>](/<path to the parent>.md).` in section 2. No sub-feature is listed among the similar or related features.
 - [ ] Every acceptance criterion names a persona from section 4, is in Given / When / Then form, can be checked by using the product, and, with several stages, sits under the stage that delivers it.
 - [ ] Screenshots, mockups and prototypes: every screenshot file is in the bundle, shown in the document and listed in `media` with its hash; every hosted screenshot, mockup and prototype is linked; or "None" is confirmed by the user.
-- [ ] Complete for the spec: the specs skill could write a complete, exhaustive technical spec from the document without asking a single product question; any deferred one is an open question in the document.
+- [ ] Complete for the spec: the specs skill could write a complete, exhaustive technical spec from the document without asking a single product question; any deferred one is an open question in the document: inline in its section, or in section 11 when no single section can answer it.
 - [ ] No `> **Pending:**` marker is left.
 - [ ] Nothing was added that the user didn't confirm.
 - [ ] No technology, component, architecture or code, and no technical assumption; any technical point is a functional requirement the user confirmed, in plain language.
