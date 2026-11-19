@@ -1,5 +1,5 @@
 ---
-description: Agent skills for the software development life cycle (functional requirements, bug reports, technical specs, designs, test plans, implementation plans), for Claude Code and other agents.
+description: Agent skills for the software development life cycle (functional requirements, bug reports, technical specs, ADRs, designs, test plans, implementation plans), for Claude Code and other agents.
 generated:
   at: 2026-11-01T12:24:42Z
   by: claude-code/2.1.316
@@ -9,6 +9,9 @@ links:
     rel: part-of
     to: ../README.md
 sources:
+  - id: adr
+    resource: sdlc/skills/adr/SKILL.md
+    title: adr skill
   - id: agent-skills
     resource: https://agentskills.io
     title: Agent Skills specification
@@ -50,7 +53,7 @@ type: Plugin
 
 Part of the [dzango-agent-plugins](../README.md) marketplace.
 
-Agent skills for the software development life cycle (functional requirements, bug reports, technical specs, designs, test plans, implementation plans), for Claude Code and other agents.[^plugin]
+Agent skills for the software development life cycle (functional requirements, bug reports, technical specs, ADRs, designs, test plans, implementation plans), for Claude Code and other agents.[^plugin]
 
 ## Skills
 
@@ -69,6 +72,9 @@ Listed in the order they're used:
   - The spec is AI-XF 0.5 markdown, a superset of OKF 0.2, of type `Technical specs`. The line under its title shows the document type and the subject type: `**Technical specs** · **Feature**`, `**Bug fix**` or `**Refactoring**`. The design, the test plan and the implementation plan show theirs the same way.
   - The skill first settles the codebase scope (a single repo, an app in a monorepo, or several repos) and the folder the specs live in.
   - A spec written from a requirements document is named after it, as `<feature-id>-spec.md`, so that the two files never share a name, and links to it as `specifies`, in its frontmatter and its body.
+- `adr`: turns a given spec into the ADRs (architecture decision records) for its strong technical choices, one per decision.[^adr]
+  - Each ADR has at least two workable options with their trade-offs, a recommendation, and the user's decision.
+  - It follows the project's ADR convention when there is one, and the design and plan build on its decisions.
 - `design`: proposes a design for a given spec, as an architecture document made mainly of C4 diagrams in Mermaid.[^design]
   - It identifies all the sub-systems involved, in a System context and a Container diagram, with Component and Deployment diagrams where needed.
   - Each user story gets a dynamic diagram of the workflow between the sub-systems.
@@ -80,14 +86,14 @@ Listed in the order they're used:
   - The plan covers the same codebase scope as the spec.
 - `plan`: turns a given spec into an implementation plan of phases and steps, without code.[^plan]
   - The spec's hard technical problems come first: feasibility is settled before anything is built on it.
-  - Each strong technical choice gets at least two proposed solutions and, where appropriate, an ADR.
+  - It builds on the spec's ADRs; each new strong technical choice gets at least two proposed solutions and, where appropriate, an ADR of its own.
   - The plan evaluates how independently the sub-systems can be worked on, so that several developers can proceed at the same time, and it avoids unnecessary coupling, especially cycles.
   - The spec's phases are honoured, and the plan can add its own phases and sub-phases, each with a significant outcome.
   - Each step produces a testable deliverable, depends only on previous steps, and ideally touches no more than one or two sub-systems.
   - When a test plan exists for the spec, the constraint is that its tests pass: each test is assigned to a step, and they all pass after the last one.
   - A spec that isn't suitable is sent back to `specs`, on the user's go-ahead.
 
-All six skills publish their document as a draft in a pull request, and stop there. The pull request's review and merge approve it: on merge, the [okf-approve](https://github.com/dzangolab/okf-actions/tree/main/approve) GitHub Action, run by the repository that contains the documents, marks them `stable` and records who vouched for them, following the repository's rules.[^specs]
+All seven skills publish their document as a draft in a pull request, and stop there. The pull request's review and merge approve it: on merge, the [okf-approve](https://github.com/dzangolab/okf-actions/tree/main/approve) GitHub Action, run by the repository that contains the documents, marks them `stable` and records who vouched for them, following the repository's rules.[^specs]
 
 ## Usage
 
@@ -96,6 +102,8 @@ All six skills publish their document as a draft in a pull request, and stop the
 `bug` activates when you ask your agent to write a bug report.[^bug] In Claude Code, invoke it directly with `/sdlc:bug <your report>`.
 
 Once the skills are installed, `specs` activates whenever you ask your agent to write, draft or refine a spec for a change.[^specs] In Claude Code, invoke it directly with `/sdlc:specs <your request>`.
+
+`adr` activates when you ask for ADRs or the architecture decisions of a spec.[^adr] In Claude Code, invoke it directly with `/sdlc:adr <path to the spec>`.
 
 `design` activates when you ask for a design or an architecture for a spec.[^design] In Claude Code, invoke it directly with `/sdlc:design <path to the spec>`.
 
@@ -123,6 +131,7 @@ claude --plugin-dir /path/to/plugins/sdlc
 The skills are plain [Agent Skills](https://agentskills.io) (a folder with a `SKILL.md`), so other agents that read that format, such as Codex, Gemini CLI, GitHub Copilot or Cursor, can use them too.[^agent-skills] Install them with the [`skills` CLI](https://github.com/vercel-labs/skills), which copies them to each agent's skills folder:[^skills-cli]
 
 ```
+npx skills add dzangolab/dzango-agent-plugins --skill adr
 npx skills add dzangolab/dzango-agent-plugins --skill bug
 npx skills add dzangolab/dzango-agent-plugins --skill design
 npx skills add dzangolab/dzango-agent-plugins --skill feature
@@ -131,6 +140,7 @@ npx skills add dzangolab/dzango-agent-plugins --skill specs
 npx skills add dzangolab/dzango-agent-plugins --skill tests
 ```
 
+[^adr]: adr skill, `sdlc/skills/adr/SKILL.md`
 [^agent-skills]: Agent Skills specification, https://agentskills.io
 [^bug]: bug skill, `sdlc/skills/bug/SKILL.md`
 [^design]: design skill, `sdlc/skills/design/SKILL.md`

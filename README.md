@@ -27,7 +27,7 @@ dzangolab's marketplace repo for the `dzango` marketplace. It hosts several Clau
 ## Plugins
 
 - [`devops`](devops/README.md): shared skills for infrastructure-as-code projects (Pulumi, Ansible, AWS).[^marketplace]
-- [`sdlc`](sdlc/README.md): skills for the software development life cycle (functional requirements, bug reports, technical specs, designs, test plans, implementation plans).[^marketplace]
+- [`sdlc`](sdlc/README.md): skills for the software development life cycle (functional requirements, bug reports, technical specs, ADRs, designs, test plans, implementation plans).[^marketplace]
 
 ## Install
 
