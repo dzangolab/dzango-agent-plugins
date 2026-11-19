@@ -126,7 +126,7 @@ Settle the folder the feature documents live in before writing anything: it is t
 2. Always confirm with the user: propose the best candidate, and mention the others when there are several. Within a bundle, propose the folder that already holds the documents about features (e.g. `features/`), unless the bundle has another convention.
 3. If you find no suitable candidate, ask the user where the feature documents should live; don't pick a default.
 
-The document goes in the agreed folder as `feature-<slug>.md`, unless the folder already follows another naming convention. Check that no other document in the bundle already has that `id`.
+The document goes in the agreed folder as `feature-<slug>.md`, unless the folder already follows another naming convention. Check that no other document in the bundle already has that `id`. The technical spec written from it with the specs skill goes next to it as `<id>-spec.md`, so the two never share a name.
 
 ## AI-XF format
 

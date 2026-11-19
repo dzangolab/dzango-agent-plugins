@@ -8,7 +8,7 @@ description: <one-line summary of the intent>
 generated:
   at: <ISO 8601 datetime with UTC offset>
   by: <agent>/<version>
-id: <type>-<slug>
+id: <type>-<slug> # <feature-id>-spec when written from a feature document
 # Only when related specs exist; mirror each one with a body link
 links:
   - note: <why they are related>
