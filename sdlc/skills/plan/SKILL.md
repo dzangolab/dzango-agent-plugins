@@ -83,12 +83,12 @@ Point out the areas that need a **strong choice**: one that's costly to reverse,
 
 Record every strong choice under Technical choices in the plan.
 
-**Create an ADR (architecture decision record) where appropriate:** when the choice will outlive this plan, is hard to reverse, or affects work beyond this spec, or when the team will one day ask why it was made. A local choice that the plan's table explains well enough doesn't need one.
+**Reuse the spec's ADRs.** The strong choices of the spec are usually decided before the plan, in ADRs written with the [adr skill](../adr/SKILL.md). Find them (ADRs with a `references` link to the spec, or in the project's ADR folder) and build on their decisions: don't decide them again, and list each one under Technical choices with a link to it. A decision the plan can't follow (e.g. a feasibility step proved it unworkable) gets a new ADR that supersedes it, with the user's go-ahead.
 
-- **Location and format.** Look for an existing ADR convention in the codebase scope (a folder such as `docs/adr/`, `adr/` or `docs/decisions/`, or the project's agent instructions), and follow its location, numbering and format. Without one, propose an `adr/` folder in the plan's AI-XF bundle, and confirm it with the user.
-- **Template.** Without an existing format, use [adr-template.md](adr-template.md): one file per decision, `adr-<slug>.md`, which is an AI-XF concept like the plan.
-- **Lifecycle.** An ADR is published with the plan, in the same pull request, as `status: draft`, and it's accepted by that pull request's review and merge, like the plan. A decision left to a feasibility step gets its ADR in that step.
-- **Links.** The plan has a `references` link to each ADR in the bundle, mirrored by a body link in Technical choices.
+**A new strong choice gets an ADR where appropriate,** following the [adr skill](../adr/SKILL.md): the same criteria, convention lookup, [template](../adr/template.md) and AI-XF format, with a `references` link to the plan as well as to the spec. A local choice that the plan's table explains well enough doesn't need one.
+
+- **Lifecycle.** A new ADR is published with the plan, in the same pull request, as `status: draft`, and it's accepted by that pull request's review and merge, like the plan. A decision left to a feasibility step gets its ADR in that step.
+- **Links.** The plan has a `references` link to each ADR in the bundle, existing or new, mirrored by a body link in Technical choices.
 
 ## Sub-systems
 

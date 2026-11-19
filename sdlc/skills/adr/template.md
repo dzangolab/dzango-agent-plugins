@@ -1,6 +1,6 @@
 # ADR template
 
-Use this when the project has no ADR format of its own: one file per decision, named `adr-<slug>.md`. Section guidance is in the HTML comments; remove the comments in the final document. The frontmatter follows the [AI-XF format section of the specs skill](../specs/SKILL.md#ai-xf-format), so `status: draft` means proposed, `stable` (set on merge) means accepted, and `deprecated` with a `superseded-by` link means superseded. An accepted ADR isn't rewritten: a change of decision gets a new ADR that supersedes it.
+Use this when the project has no ADR format of its own: one file per decision, named `adr-<slug>.md`. Start with the header line under the title. Section guidance is in the HTML comments; remove the comments in the final document. The frontmatter follows the [AI-XF format section of the specs skill](../specs/SKILL.md#ai-xf-format), so `status: draft` means proposed, `stable` (set on merge) means accepted, and `deprecated` with a `superseded-by` link means superseded. An accepted ADR isn't rewritten: a change of decision gets a new ADR that supersedes it.
 
 ````markdown
 ---
@@ -10,6 +10,10 @@ generated:
   by: <agent>/<version>
 id: adr-<slug>
 links:
+  - note: The spec this decision is for
+    rel: references
+    to: <spec id>
+  # When an implementation plan raised the decision
   - note: The plan that raised this decision
     rel: references
     to: <plan id>
@@ -26,14 +30,16 @@ type: ADR
 
 # ADR: <decision in a few words>
 
+**ADR**
+
 ## Context
 
 <!--
 The problem and the forces at play: the spec's constraints, the code as it is, and the results of any feasibility
-step. Link the plan that raised it. Facts only; don't argue for an option here.
+step. Link the spec it is for, and the plan when a plan raised it. Facts only; don't argue for an option here.
 -->
 
-Raised by [<plan title>](/<plan-file>.md).
+For [<spec title>](/<spec-file>.md). Raised by [<plan title>](/<plan-file>.md).
 
 ## Options
 
