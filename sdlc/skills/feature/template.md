@@ -1,6 +1,6 @@
 # Feature document template
 
-Use these sections, in this order. Section guidance is in the HTML comments; remove the comments in the final document.
+Start with the header line under the title, then use these sections, in this order. Section guidance is in the HTML comments; remove the comments in the final document.
 
 ````markdown
 ---
@@ -11,7 +11,7 @@ generated:
 id: feature-<slug>
 # Only when related documents exist; mirror each one with a body link
 links:
-  # For a sub-feature only: its parent feature, mirrored in section 2
+  # For a sub-feature only: its parent feature, mirrored under the title
   - note: <the stage of the parent's rollout this sub-feature delivers>
     rel: part-of
     to: <parent feature id>
@@ -40,13 +40,7 @@ type: Functional requirements
 
 # <Title>
 
-## 1. Intent
-
-<!-- One to three sentences, in plain language: what the feature lets people do, and why it matters. -->
-
-## 2. Type
-
-Feature
+**Functional requirements**
 
 <!--
 For a sub-feature only: the parent feature it is part of. The parent is done when all its sub-features are done.
@@ -54,7 +48,11 @@ For a sub-feature only: the parent feature it is part of. The parent is done whe
 
 Part of [<parent feature title>](/<path to the parent feature>.md).
 
-## 3. Context
+## 1. Intent
+
+<!-- One to three sentences, in plain language: what the feature lets people do, and why it matters. -->
+
+## 2. Context
 
 <!--
 Background a newcomer needs to understand why this matters, in the product's words:
@@ -105,7 +103,7 @@ Write "None" when the user confirms there are no examples.
 
 - [<screen capture or page title>](<URL>): <what it shows>[^short-id]
 
-## 4. Personas
+## 3. Personas
 
 <!--
 Everyone impacted, and how. Most impacts should be gains, but state losses honestly.
@@ -115,7 +113,7 @@ Everyone impacted, and how. Most impacts should be gains, but state losses hones
 | ------- | ------ | ----- | ------ |
 | <name>  | Positive / Negative / Mixed | <concrete gain> | <concrete loss, or "None"> |
 
-## 5. Outcomes
+## 4. Outcomes
 
 <!--
 What is different for people, or for the business, once the feature is available. Each outcome is observable,
@@ -124,7 +122,7 @@ and measurable when the user gave a measure ("most" or "faster" are not measures
 
 - <outcome>
 
-## 6. Boundaries
+## 5. Boundaries
 
 <!--
 What is explicitly not included, including related ideas the user chose to leave for another document or a later discussion.
@@ -132,7 +130,7 @@ What is explicitly not included, including related ideas the user chose to leave
 
 - <out-of-scope item>
 
-## 7. Rollout
+## 6. Rollout
 
 <!--
 The stages in which the feature reaches people, in order. The feature is done when every stage is done.
@@ -156,13 +154,13 @@ A sub-feature not written yet is named without a link; the link is added once it
 - **Who gets it:** <everyone, or which group of people>
 - **Done when:** <condition anyone can check>
 
-## 8. Deliverables
+## 7. Deliverables
 
 <!--
 In very broad terms, how the feature gets delivered: what people receive, not how it is built.
 Examples: a new release of the app or of each library, a new version in the app stores, an update of the website,
 an announcement, updated help pages.
-Single stage: a plain list. Several stages: one sub-section per stage of section 7, in the same order,
+Single stage: a plain list. Several stages: one sub-section per stage of section 6, in the same order,
 each listing what that stage delivers.
 -->
 
@@ -174,15 +172,15 @@ each listing what that stage delivers.
 
 - <deliverable>
 
-## 9. Acceptance criteria
+## 8. Acceptance criteria
 
 <!--
-One group per need, each for a persona from section 4, in the order people meet them.
+One group per need, each for a persona from section 3, in the order people meet them.
 Each criterion describes what a person does and sees, in Given / When / Then form, so that anyone can check it
 by using the product. Include the unusual situations the user confirmed: nothing to show yet, a mistake,
 missing permission, a limit reached.
 Single stage: the groups directly, without stage sub-sections.
-Several stages: one sub-section per stage of section 7, with the groups that stage delivers. A stage delivered
+Several stages: one sub-section per stage of section 6, with the groups that stage delivers. A stage delivered
 by a sub-feature only links to it: its acceptance criteria are in the sub-feature's document.
 -->
 
@@ -198,11 +196,11 @@ As a <persona>, I want <capability>, so that <benefit>.
 
 See [<sub-feature title>](/<path to the sub-feature>.md).
 
-## 10. Screenshots, mockups and prototypes
+## 9. Screenshots, mockups and prototypes
 
 <!--
 The visuals the user supplied for this feature, each with a caption saying what it shows and why it matters
-(the screenshots of other apps go with their example in section 3).
+(the screenshots of other apps go with their example in section 2).
 - Screenshots stored in the bundle are shown in the document, and listed in `media`.
 - Screenshots hosted elsewhere are linked, and listed in `media` with their URL.
 - Mockups and prototypes are linked (e.g. a design file or a clickable prototype), and listed in `sources`.
@@ -217,7 +215,7 @@ Write "None" when the user confirms there are none.
 - [<screenshot title>](<URL>): <what it shows>
 - [<mockup or prototype title>](<URL>): <what it shows>[^short-id]
 
-## 11. Open questions
+## 10. Open questions
 
 <!--
 The questions the user chose to defer that no single section can answer yet, such as whether another feature

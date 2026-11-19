@@ -51,7 +51,7 @@ Right after the codebase scope (or first, outside a codebase), settle the folder
 2. Always confirm with the user: propose the best candidate, and mention the others when there are several.
 3. If you find no suitable candidate, ask the user where the specs should live; don't pick a default.
 
-The spec file goes in the agreed folder as `<type>-<slug>.md`, where `<type>` is `feature`, `bugfix` or `refactoring`, unless the folder already follows another naming convention. A spec written from a feature document (such as one written by the [feature skill](../feature/SKILL.md)) is named after it instead, as `<feature-id>-spec.md`, next to it (e.g. `features/feature-csv-export-spec.md` for `features/feature-csv-export.md`): the two files never share a name, and the spec's name shows which feature document it implements.
+The spec file goes in the agreed folder as `<type>-<slug>.md`, where `<type>` is `feature`, `bugfix` or `refactoring`, unless the folder already follows another naming convention. A spec written from a requirements document (functional requirements, such as one written by the [feature skill](../feature/SKILL.md)) is named after it instead, as `<requirements-id>-spec.md`, next to it (e.g. `features/feature-csv-export-spec.md` for `features/feature-csv-export.md`): the two files never share a name, and the spec's name shows which requirements document it specifies.
 
 ## AI-XF format
 
@@ -63,13 +63,13 @@ Frontmatter (keys in alphabetical order):
 | --- | --- | --- |
 | `description` | Recommended | One-line summary of the intent. |
 | `generated` | Yes (trust field, satisfies Level 2) | `by: <agent>/<version>`, the agent writing the spec and its version (e.g. `claude-code/2.1.314` from `claude --version`), `at: <ISO 8601 datetime>`. |
-| `id` | Yes (Level 1) | Lowercase, words separated by `-`, no `/`, unique in the bundle; same as the filename stem (`<type>-<slug>`, or `<feature-id>-spec` for a spec written from a feature document). Never change it once assigned, even if the file is renamed or moved. |
-| `links` | When related documents exist | Typed edges `{rel, to, note}`; `to` is the target's `id`. Typical `rel`: `depends-on`, `references`, `relates-to` (e.g. a side issue split into its own spec), `specifies`, `supersedes`. A spec written from a feature document always has a `specifies` link to it, mirrored in section 2 (see [template.md](template.md)): the spec says how the feature document's requirements are built. |
+| `id` | Yes (Level 1) | Lowercase, words separated by `-`, no `/`, unique in the bundle; same as the filename stem (`<type>-<slug>`, or `<requirements-id>-spec` for a spec written from a requirements document). Never change it once assigned, even if the file is renamed or moved. |
+| `links` | When related documents exist | Typed edges `{rel, to, note}`; `to` is the target's `id`. Typical `rel`: `depends-on`, `references`, `relates-to` (e.g. a side issue split into its own spec), `specifies`, `supersedes`. A spec written from a requirements document always has a `specifies` link to it, mirrored under the title (see [template.md](template.md)): the spec says how that document's requirements are built. |
 | `sources` | When there are sources | List of `{id, resource, title}`; `resource` is required (absolute URL, `/`-prefixed bundle path, or relative path). Use for functional requirements, issues, similar features in other apps, screenshots, logs. |
 | `status` | Yes | `draft` until its pull request is merged (see [Publishing](#publishing)); `stable` after; `deprecated` for a tombstone. |
-| `tags` | Recommended | Short strings: area, module, product. |
+| `tags` | Yes | The subject type first (`feature`, `bug-fix` or `refactoring`, as on the line under the title), then short strings: area, module, product. |
 | `title` | Recommended | The spec title, identical to the H1. |
-| `type` | **Required** (Level 0) | Always `Technical specs`. The kind of change (`Feature`, `Bug fix` or `Refactoring`) goes in section 2. |
+| `type` | **Required** (Level 0) | Always `Technical specs`. The line under the title shows it with the subject type: `**Technical specs** · **Feature**`, `**Bug fix**` or `**Refactoring**`. |
 | `verified` | Added on merge, never by you | One entry per reviewer who approved the pull request, or for the person who merged it when nobody did: `- at: <ISO 8601 datetime>`, `by: human:<GitHub login>`. |
 
 Rules to respect:
@@ -182,7 +182,7 @@ Before presenting the draft, check that:
 - [ ] For a bug fix: reproduction steps, expected and actual behaviour are present.
 - [ ] For a refactoring: constraints include "no new feature" and "no behaviour change" (unless the user explicitly says otherwise), and how equivalence is checked.
 - [ ] Every edge case has a verifiable expected behaviour.
-- [ ] Every user story names a persona from section 4 and has Given / When / Then acceptance criteria.
+- [ ] Every user story names a persona from section 3 and has Given / When / Then acceptance criteria.
 - [ ] Rollout: one sub-section per phase when there are several, each with verifiable exit criteria.
 - [ ] Prerequisites: one sub-section per Rollout phase when there are several; "None" where nothing is required, confirmed by the user.
 - [ ] The workflow / user journey has at least one diagram.
@@ -193,4 +193,4 @@ Before presenting the draft, check that:
 - [ ] No unjustified coupling between components: every dependency the spec introduces or relies on has a reason the user validated.
 - [ ] No implementation plan, task list or code.
 - [ ] Nothing in the spec is an unvalidated assumption.
-- [ ] AI-XF Level 2: frontmatter is parseable YAML with `type: Technical specs` and a unique, well-formed `id`; section 2 gives the kind of change; a spec written from a feature document has a `specifies` link to it, mirrored in section 2; `generated` is present; every `links` entry has `rel` and a resolvable `to`, mirrored by a body link; timestamps have a UTC offset; footnotes match `sources[].id`; the filename isn't `index.md` or `log.md`; the bundle has `manifest.ai-xf.yaml`.
+- [ ] AI-XF Level 2: frontmatter is parseable YAML with `type: Technical specs` and a unique, well-formed `id`; the line under the title gives the document type and the subject type, the latter also the first tag; a spec written from a requirements document has a `specifies` link to it, mirrored under the title; `generated` is present; every `links` entry has `rel` and a resolvable `to`, mirrored by a body link; timestamps have a UTC offset; footnotes match `sources[].id`; the filename isn't `index.md` or `log.md`; the bundle has `manifest.ai-xf.yaml`.

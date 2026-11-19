@@ -60,7 +60,7 @@ Actively ask for them, early in the interview, rather than waiting for the user 
 1. **Ask which apps** do something similar, or that the user, the people in Personas or the person who asked for the feature like for this. You may suggest apps you know that have a similar feature, as a question; the user decides which ones are examples.
 2. **Ask for each example's visuals:** screenshots, screen captures (videos of the feature in use), and links (the app, its help pages, demos, articles). Ask for files as paths you can read, and for links where they are hosted. Ask again for the visuals of each example the user names, rather than once for all.
 3. **Ask what to take from each example, and what not:** the user says what this feature should do the same way, and what it should not copy. Never describe how another app behaves from your own knowledge: write only what the user confirms, or what the visuals show and the user confirms.
-4. **Include them in section 3,** one sub-section per example (see [template.md](template.md)): visuals stored in the bundle, hosted ones linked, and links listed in `sources`, as described in [Screenshots, mockups and prototypes](#screenshots-mockups-and-prototypes), including its privacy check.
+4. **Include them in section 2,** one sub-section per example (see [template.md](template.md)): visuals stored in the bundle, hosted ones linked, and links listed in `sources`, as described in [Screenshots, mockups and prototypes](#screenshots-mockups-and-prototypes), including its privacy check.
 5. An example that does more than the agreed feature doesn't widen it: what it does beyond the feature is a side issue.
 
 Write "None" in that sub-section only when the user confirms there are no examples.
@@ -81,7 +81,7 @@ A sub-feature is part of its parent feature: the parent is done when all its sub
 
 - **When to split:** when the scope grows too large (see Rules), suggest the split with your reasons: which aspects become sub-features, and which stage of the rollout each one delivers. A split always follows the rollout: each sub-feature is a stage of the parent, or part of one. Nothing is split without the user's go-ahead.
 - **The parent document** keeps the intent, context, personas, outcomes and boundaries of the whole feature. Its Rollout lists every stage; a stage delivered by a sub-feature links to the sub-feature's document, and its acceptance criteria are in that document, not in the parent's.
-- **Each sub-feature** gets its own feature document, written with this skill after the parent, in a separate pass, and published in the same pull request when possible. In its frontmatter, a `part-of` link to the parent's `id`, with a note naming the stage it delivers; in section 2, under `Feature`, the line `Part of [<parent title>](/<path to the parent>.md).` Its own sections describe the sub-feature only, and stay consistent with the parent: same personas, within the parent's boundaries.
+- **Each sub-feature** gets its own feature document, written with this skill after the parent, in a separate pass, and published in the same pull request when possible. In its frontmatter, a `part-of` link to the parent's `id`, with a note naming the stage it delivers; under the title, after the `**Functional requirements**` line, the line `Part of [<parent title>](/<path to the parent>.md).` Its own sections describe the sub-feature only, and stay consistent with the parent: same personas, within the parent's boundaries.
 - **Links:** the sub-feature declares the `part-of` edge; the parent doesn't repeat it in its frontmatter, but links to each sub-feature in its Rollout. Until a sub-feature's document exists, the parent names the sub-feature without a link, and the link is added once the document is written.
 - **Naming:** propose `feature-<parent slug>-<sub-feature slug>.md` for a sub-feature, unless the folder follows another convention, and confirm it with the user.
 - **An existing feature document** that grows too large is split the same way: it becomes the parent, and the aspects moved out become sub-features.
@@ -95,13 +95,13 @@ Ask the user, once the feature is framed, whether they wish to add:
 
 Then:
 
-1. **Screenshots given as files are included in the document.** Propose where to store them in the bundle and confirm it with the user: follow the bundle's convention when it has one, otherwise a folder named after the document's `id`, next to it (e.g. `features/feature-csv-export/current-list.png`). Copy them there with short, descriptive names, show each one as an image with a caption (in section 10, or with its example in section 3), and list it in `media` with its bundle path as `uri`, its caption as `title`, and its `hash` (`sha256:` followed by the output of `shasum -a 256 <file>`).
-2. **Screenshots hosted elsewhere are linked** in section 10, with a caption, and listed in `media` with their URL as `uri`.
-3. **Mockups and prototypes are linked** in section 10, with a line on what each shows, and listed in `sources`.
+1. **Screenshots given as files are included in the document.** Propose where to store them in the bundle and confirm it with the user: follow the bundle's convention when it has one, otherwise a folder named after the document's `id`, next to it (e.g. `features/feature-csv-export/current-list.png`). Copy them there with short, descriptive names, show each one as an image with a caption (in section 9, or with its example in section 2), and list it in `media` with its bundle path as `uri`, its caption as `title`, and its `hash` (`sha256:` followed by the output of `shasum -a 256 <file>`).
+2. **Screenshots hosted elsewhere are linked** in section 9, with a caption, and listed in `media` with their URL as `uri`.
+3. **Mockups and prototypes are linked** in section 9, with a line on what each shows, and listed in `sources`.
 4. Ask the user what each visual shows and why it matters, rather than describing it yourself; describe what you see only as a proposal to confirm. A visual that shows more than the agreed feature doesn't widen it: what it shows beyond the feature is a side issue.
 5. Before copying a screenshot into the bundle, check with the user that it shows nothing private (names, emails, customer data) that shouldn't be published with the document.
 
-Write "None" in section 10 only when the user confirms there are no visuals.
+Write "None" in section 9 only when the user confirms there are no visuals.
 
 ## Live draft
 
@@ -138,7 +138,7 @@ The document is an [AI-XF 0.5](https://github.com/DavidROliverBA/ai-xf-format/bl
 | `links` | Typed edges to related documents in the bundle: for a sub-feature, `part-of` its parent (see [Sub-features](#sub-features)); otherwise e.g. `relates-to` a separate feature document split off from this one, `references` an existing feature's document it follows the pattern of, `supersedes` a feature document it replaces. |
 | `media` | One entry per screenshot, screen capture or other image in the document: `uri` (required: bundle path or URL), `hash` (`sha256:<hex>`, for files in the bundle) and `title` (its caption). |
 | `sources` | Requests, interviews, support tickets, mockups, prototypes, links to similar features in other apps, user documentation. |
-| `type` | Always `Functional requirements`. Section 2 says it's a feature. |
+| `type` | Always `Functional requirements`, shown as `**Functional requirements**` on the line under the title. The document always describes a feature, so it has no subject type. |
 
 ## Process
 
@@ -183,7 +183,7 @@ The document already holds every confirmed answer. Go over it as a whole:
 2. Every statement must be specific and checkable by someone using the product. If it can't be, rewrite it or ask.
 3. Read it as the people in Personas would: rewrite any word they wouldn't use.
 4. Read it as the author of the technical spec would: list every product question the spec would still have to ask, and ask the user each one (see Rules).
-5. If the user explicitly chooses to defer a question, never fill it with a guess: mark it inline as `> **Open question:** …` in the section it belongs to, or, when no single section can answer it (e.g. whether another feature is needed first), list it in section 11. Write "None" in section 11 when no such question is left.
+5. If the user explicitly chooses to defer a question, never fill it with a guess: mark it inline as `> **Open question:** …` in the section it belongs to, or, when no single section can answer it (e.g. whether another feature is needed first), list it in section 10. Write "None" in section 10 when no such question is left.
 
 ### 4. Review with the user
 
@@ -211,10 +211,10 @@ Before presenting the draft, check that:
 - [ ] Boundaries list what is explicitly out of scope, including the side issues left out.
 - [ ] Rollout: one sub-section per stage when there are several, each saying what it delivers, who gets it and when it is done.
 - [ ] Deliverables: in broad terms, what people receive; one sub-section per stage when there are several, matching Rollout.
-- [ ] Sub-features: each one is a stage (or part of a stage) of the parent's rollout, linked from it once its document exists; a sub-feature document has a `part-of` link to its parent and the line `Part of [<parent title>](/<path to the parent>.md).` in section 2. No sub-feature is listed among the similar or related features.
-- [ ] Every acceptance criterion names a persona from section 4, is in Given / When / Then form, can be checked by using the product, and, with several stages, sits under the stage that delivers it.
+- [ ] Sub-features: each one is a stage (or part of a stage) of the parent's rollout, linked from it once its document exists; a sub-feature document has a `part-of` link to its parent and the line `Part of [<parent title>](/<path to the parent>.md).` under the title. No sub-feature is listed among the similar or related features.
+- [ ] Every acceptance criterion names a persona from section 3, is in Given / When / Then form, can be checked by using the product, and, with several stages, sits under the stage that delivers it.
 - [ ] Screenshots, mockups and prototypes: every screenshot file is in the bundle, shown in the document and listed in `media` with its hash; every hosted screenshot, mockup and prototype is linked; or "None" is confirmed by the user.
-- [ ] Complete for the spec: the specs skill could write a complete, exhaustive technical spec from the document without asking a single product question; any deferred one is an open question in the document: inline in its section, or in section 11 when no single section can answer it.
+- [ ] Complete for the spec: the specs skill could write a complete, exhaustive technical spec from the document without asking a single product question; any deferred one is an open question in the document: inline in its section, or in section 10 when no single section can answer it.
 - [ ] No `> **Pending:**` marker is left.
 - [ ] Nothing was added that the user didn't confirm.
 - [ ] No technology, component, architecture or code, and no technical assumption; any technical point is a functional requirement the user confirmed, in plain language.
