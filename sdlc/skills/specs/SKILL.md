@@ -51,7 +51,7 @@ Right after the codebase scope (or first, outside a codebase), settle the folder
 2. Always confirm with the user: propose the best candidate, and mention the others when there are several.
 3. If you find no suitable candidate, ask the user where the specs should live; don't pick a default.
 
-The spec file goes in the agreed folder as `<type>-<slug>.md`, where `<type>` is `feature`, `bugfix` or `refactoring`, unless the folder already follows another naming convention. A spec written from a requirements document (functional requirements, such as one written by the [feature skill](../feature/SKILL.md)) is named after it instead, as `<requirements-id>-spec.md`, next to it (e.g. `features/feature-csv-export-spec.md` for `features/feature-csv-export.md`): the two files never share a name, and the spec's name shows which requirements document it specifies.
+The spec file goes in the agreed folder as `<type>-<slug>.md`, where `<type>` is `feature`, `bugfix` or `refactoring`, unless the folder already follows another naming convention. A spec written from a requirements document (functional requirements, such as one written by the [feature skill](../feature/SKILL.md), or a bug report, such as one written by the [bug skill](../bug/SKILL.md)) is named after it instead, as `<requirements-id>-spec.md`, next to it (e.g. `features/feature-csv-export-spec.md` for `features/feature-csv-export.md`, `bugfixes/bug-menu-gone-spec.md` for `bugfixes/bug-menu-gone.md`): the two files never share a name, and the spec's name shows which requirements document it specifies.
 
 ## AI-XF format
 

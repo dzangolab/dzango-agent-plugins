@@ -12,7 +12,7 @@ The user's prompt will be vague and too succinct. Your first job is to **ask que
 ## Rules
 
 - **Features only.** A feature document describes one feature.
-  - A bug fix is not a feature: it gets its own document, a bug report, written with its own skill. When the request is a bug fix, say so and stop.
+  - A bug fix is not a feature: it gets its own document, a bug report, written with the [bug skill](../bug/SKILL.md). When the request is a bug fix, say so and offer that skill instead.
   - A refactoring changes nothing people can see, so it has no feature document: offer the [specs skill](../specs/SKILL.md) instead.
   - When the request mixes a feature with a bug fix or a refactoring, the feature gets this document and the rest is a side issue.
 - **One feature per document.** Pick the feature that appears to be the main focus of the conversation; if it isn't clear, ask, don't guess.
@@ -121,7 +121,7 @@ Settle the folder the feature documents live in before writing anything: it is t
 
 1. Infer candidates, in this order:
    - an AI-XF bundle already in or around the project: a folder with a `manifest.ai-xf.yaml`, such as the folder of the specs;
-   - a folder that already holds feature documents or specs (markdown files with `type: Functional requirements` or `Technical specs` frontmatter, or, in older bundles, `Feature`, `Bug fix` or `Refactoring`);
+   - a folder that already holds feature documents or specs (markdown files with `type: Functional requirements`, `Bug report` or `Technical specs` frontmatter, or, in older bundles, `Feature`, `Bug fix` or `Refactoring`);
    - a convention stated in the project (agent instructions such as `AGENTS.md`, `CLAUDE.md` or `GEMINI.md`, `README.md`, contributing guide).
 2. Always confirm with the user: propose the best candidate, and mention the others when there are several. Within a bundle, propose the folder that already holds the documents about features (e.g. `features/`), unless the bundle has another convention.
 3. If you find no suitable candidate, ask the user where the feature documents should live; don't pick a default.

@@ -1,5 +1,5 @@
 ---
-description: Agent skills for the software development life cycle (product requirements, technical specs, designs, test plans, implementation plans), for Claude Code and other agents.
+description: Agent skills for the software development life cycle (functional requirements, bug reports, technical specs, designs, test plans, implementation plans), for Claude Code and other agents.
 generated:
   at: 2026-11-01T12:24:42Z
   by: claude-code/2.1.316
@@ -12,6 +12,9 @@ sources:
   - id: agent-skills
     resource: https://agentskills.io
     title: Agent Skills specification
+  - id: bug
+    resource: sdlc/skills/bug/SKILL.md
+    title: bug skill
   - id: design
     resource: sdlc/skills/design/SKILL.md
     title: design skill
@@ -47,7 +50,7 @@ type: Plugin
 
 Part of the [dzango-agent-plugins](../README.md) marketplace.
 
-Agent skills for the software development life cycle (product requirements, technical specs, designs, test plans, implementation plans), for Claude Code and other agents.[^plugin]
+Agent skills for the software development life cycle (functional requirements, bug reports, technical specs, designs, test plans, implementation plans), for Claude Code and other agents.[^plugin]
 
 ## Skills
 
@@ -58,7 +61,10 @@ Listed in the order they're used:
   - The document is drafted as the interview goes: it is created once the feature is framed and updated after each confirmed answer, so the user can follow it in a markdown preview.
   - It is written as by a non-technical product manager, with no technical assumption, and it adds nothing the user didn't confirm.
   - It is checked against the similar or related features the app already has, to avoid unintended redundancy and to match their patterns, and it asks for examples of similar features in other apps, with their screenshots, screen captures and links.
-  - A feature can be split into sub-features, each delivering a stage of its rollout and linked to it as `part-of`: the feature is done when all its sub-features are done. Anything outside the feature is offered a separate feature document. Bug fixes get their own document, a bug report; refactorings are left to `specs`.
+  - A feature can be split into sub-features, each delivering a stage of its rollout and linked to it as `part-of`: the feature is done when all its sub-features are done. Anything outside the feature is offered a separate feature document. Bug fixes get their own document, a bug report, written with `bug`; refactorings are left to `specs`.
+- `bug`: interviews the user to turn a vague bug report into a single bug report document: what goes wrong for exactly one bug, from the point of view of the people who use the product.[^bug]
+  - The document is AI-XF 0.5 markdown, a superset of OKF 0.2, of type `Bug report`, shown under its title: intent, context, personas affected, steps to reproduce, expected and actual behaviour, where it happens, frequency and impact, screenshots and recordings, and open questions.
+  - Like `feature`, it is drafted live, written as by a non-technical product manager, and names no suspected cause: finding the cause is the spec's job.
 - `specs`: interviews the user to turn a messy request into a single technical spec for exactly one feature, bug fix or refactoring.[^specs]
   - The spec is AI-XF 0.5 markdown, a superset of OKF 0.2, of type `Technical specs`. The line under its title shows the document type and the subject type: `**Technical specs** · **Feature**`, `**Bug fix**` or `**Refactoring**`. The design, the test plan and the implementation plan show theirs the same way.
   - The skill first settles the codebase scope (a single repo, an app in a monorepo, or several repos) and the folder the specs live in.
@@ -81,11 +87,13 @@ Listed in the order they're used:
   - When a test plan exists for the spec, the constraint is that its tests pass: each test is assigned to a step, and they all pass after the last one.
   - A spec that isn't suitable is sent back to `specs`, on the user's go-ahead.
 
-All five skills publish their document as a draft in a pull request, and stop there. The pull request's review and merge approve it: on merge, the [okf-approve](https://github.com/dzangolab/okf-actions/tree/main/approve) GitHub Action, run by the repository that contains the documents, marks them `stable` and records who vouched for them, following the repository's rules.[^specs]
+All six skills publish their document as a draft in a pull request, and stop there. The pull request's review and merge approve it: on merge, the [okf-approve](https://github.com/dzangolab/okf-actions/tree/main/approve) GitHub Action, run by the repository that contains the documents, marks them `stable` and records who vouched for them, following the repository's rules.[^specs]
 
 ## Usage
 
 `feature` activates when you ask your agent to write a feature document, a PRD or the product requirements for a feature.[^feature] In Claude Code, invoke it directly with `/sdlc:feature <your request>`.
+
+`bug` activates when you ask your agent to write a bug report.[^bug] In Claude Code, invoke it directly with `/sdlc:bug <your report>`.
 
 Once the skills are installed, `specs` activates whenever you ask your agent to write, draft or refine a spec for a change.[^specs] In Claude Code, invoke it directly with `/sdlc:specs <your request>`.
 
@@ -115,6 +123,7 @@ claude --plugin-dir /path/to/plugins/sdlc
 The skills are plain [Agent Skills](https://agentskills.io) (a folder with a `SKILL.md`), so other agents that read that format, such as Codex, Gemini CLI, GitHub Copilot or Cursor, can use them too.[^agent-skills] Install them with the [`skills` CLI](https://github.com/vercel-labs/skills), which copies them to each agent's skills folder:[^skills-cli]
 
 ```
+npx skills add dzangolab/dzango-agent-plugins --skill bug
 npx skills add dzangolab/dzango-agent-plugins --skill design
 npx skills add dzangolab/dzango-agent-plugins --skill feature
 npx skills add dzangolab/dzango-agent-plugins --skill plan
@@ -123,6 +132,7 @@ npx skills add dzangolab/dzango-agent-plugins --skill tests
 ```
 
 [^agent-skills]: Agent Skills specification, https://agentskills.io
+[^bug]: bug skill, `sdlc/skills/bug/SKILL.md`
 [^design]: design skill, `sdlc/skills/design/SKILL.md`
 [^feature]: feature skill, `sdlc/skills/feature/SKILL.md`
 [^plan]: plan skill, `sdlc/skills/plan/SKILL.md`
