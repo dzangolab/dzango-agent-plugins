@@ -1,13 +1,13 @@
 ---
 name: specs
-description: Interview the user to turn a messy, ambiguous request into a single high-quality technical spec document (AI-XF 0.5 markdown, a superset of OKF 0.2) for exactly one feature, bug fix, or refactoring. Use when the user asks to write, draft, create, or refine a spec, technical spec, specification, or requirements for a change, or invokes the specs skill directly (e.g. /sdlc:specs in Claude Code).
+description: Interview the user to turn a messy, ambiguous request into a single high-quality technical spec document (AI-XF 0.5 markdown, a superset of OKF 0.2) for exactly one feature, bug fix, or refactoring. Use when the user asks to write, draft, create, or refine a spec, technical spec, specification, or requirements for a change, or invokes the specs skill directly (e.g. /sdlc:specs in Claude Code). The spec is drafted live: proposals are written in the document for the user to approve, and each approved step is committed.
 ---
 
 # Specs
 
 Produce one technical spec document, in markdown conforming to AI-XF 0.5 (see [AI-XF format](#ai-xf-format)), that makes the next SDLC steps (design, test plan, implementation plan, implementation) easy and reliable.
 
-The user's input will be messy, unclear, ambiguous and full of holes. Your first job is to **ask questions and clarify intent**, not to write. Never assume: every fact, choice and inference that ends up in the spec must be validated by the user.
+The user's input will be messy, unclear, ambiguous and full of holes. Your first job is to **ask questions and clarify intent**, not to fill the spec with guesses. Never assume: every fact, choice and inference that ends up in the spec must be validated by the user before it is committed (see [Live draft](#live-draft)).
 
 ## Rules
 
@@ -17,7 +17,7 @@ The user's input will be messy, unclear, ambiguous and full of holes. Your first
 - **Side issues never leak in.** Other features, bug fixes or refactorings — mentioned by the user or discovered by you while exploring the code — are not added to the spec. For each one, ask the user whether to:
   1. split it into its own spec document (written after this one, in a separate pass), or
   2. park it for a later discussion.
-- **Validate, don't assume.** When you infer something (from the code, the conversation, or common practice), present it as a proposal and get a yes/no before writing it down.
+- **Validate, don't assume.** When you infer something (from the code, the conversation, or common practice), write it in the spec as a proposal (see [Live draft](#live-draft)) and get a yes/no before committing it.
 - **Watch out for unjustified couplings.** When the request, the code you explore, or the spec itself makes one component depend on another — or know about its internals — without a clear reason, flag it to the user. Typical signs: a generic or shared package that knows about a specific app or consumer, a component reaching into another's internals instead of its public API, a new circular dependency, two components that must change or ship together, or a feature that only works with one particular implementation of a dependency. Ask why the coupling is needed: if the user justifies it, record the reason in the spec (Constraints or Blast radius); if not, agree with the user on a decoupled outcome to specify instead.
 - **What, not how.** The spec states the problem, the expected outcome and its limits. It does not contain an implementation plan, task breakdown, or code — those are later steps.
 
@@ -95,6 +95,19 @@ Bundle files at the spec folder root:
 
 Validation: if the user has the AI-XF validator (`tools/ai-xf-validate.py` from the AI-XF repo, Python 3.9+), ask for its path and run `python3 <path>/ai-xf-validate.py <bundle-dir> --level 2`; exit code 0 means pass. Don't download and run it without the user's go-ahead.
 
+## Live draft
+
+The spec is written as the interview goes, not at the end. Your proposals go in the document, where the user reviews them, not in the chat; each step the user approves is committed, so the git history shows how the spec was agreed.
+
+- **Approved: commit.** When the user approves the proposal, commit the changes and push them, so each approved step is a commit. Stage only the spec and the bundle files it changed (`index.md`, `log.md`, `manifest.ai-xf.yaml`), never the user's other changes. The first approved step is when the branch and the draft pull request are created and pushed, after the go-ahead to publish (see [Publishing](#publishing)). The user's approval of a step is not the spec's approval: the spec stays `status: draft`, with no `verified` entry.
+- **Chat stays short.** After each update, tell the user in one or two short lines which sections changed, and ask them to approve; don't repeat the proposed text in the chat. Only a question that is genuinely open, with no answer you can propose (e.g. who asked for a feature, the steps to reproduce a bug), is asked in the chat; anything with a proposed answer is written in the document. When the user answers in the chat, write the answer in the document so that they approve its wording.
+- **Create the file once the spec is framed:** as soon as the user has confirmed the subject, its type, the title, the [codebase scope](#codebase-scope), the [spec location](#spec-location) and the filename (see [Process](#process)), write the file with the frontmatter (`status: draft`), the H1, and every section of [template.md](template.md) as a heading, followed by `> **Pending:** not discussed yet.` for the sections not reached yet. Tell the user the file's path, and suggest opening it in a markdown preview that refreshes on change (e.g. the preview of their editor), so they can follow along. This skeleton is the first proposal. `generated.at` is set when the file is created and updated when the draft is finished.
+- **Edits made by the user:** the user may edit the file at any time. Read it again before each update and keep their edits; when one contradicts an earlier answer, another section or a rule (e.g. implementation details in the spec), raise it rather than overwriting it. The user's own edits are committed with the next approved step, and you say so.
+- **Not approved: revert or revise.** When the user doesn't approve the proposal, do what they say: either revert the uncommitted changes (`git restore <file>` for the files, or `git restore -p <file>` for only the rejected hunks), or write a new version of the proposal in the file and ask again. Never commit a proposal the user hasn't approved.
+- **One proposal at a time:** keep each proposal small enough to review at once: one section, or a few related items (e.g. a small group of edge cases), with the other sections kept consistent with it (e.g. a persona renamed everywhere). Don't start the next proposal while one awaits the user's answer, so that an approval or a rejection always applies to all the uncommitted changes.
+- **Pending and open are different:** `> **Pending:** …` marks a section not discussed yet, and must be gone when the interview ends; `> **Open question:** …` marks a question the user chose to defer, and stays.
+- **Proposals go in the document:** whenever you would propose something (an answer, a constraint, an edge case, a user story and its acceptance criteria, a rollout phase, a blast-radius hypothesis, a better title), write the proposed text straight into its section of the spec file, replacing the pending marker, as uncommitted changes. A correction to an earlier, committed answer is a proposal too.
+
 ## Process
 
 ### 1. Frame the subject
@@ -105,27 +118,28 @@ Validation: if the user has the AI-XF validator (`tools/ai-xf-validate.py` from 
 4. Settle the [spec location](#spec-location), and read the existing specs there (their `index.md` first when there is one) to spot related specs.
 5. If working in a codebase, explore the relevant code within the scope to ground your questions (what exists today, where the pain is). Treat findings as hypotheses to confirm, not facts.
 6. List every distinct subject you see in the input. For each, note its likely type.
-7. Propose to the user:
+7. Propose to the user, in the chat (the file doesn't exist yet):
    - a title for the spec;
    - the main subject and its type, and a one-sentence draft of the intent;
    - the side issues you identified, asking for each: separate spec or later discussion.
-8. Do not continue until the user confirms the subject and type. The title is a working title: propose a better one whenever the discussion sharpens the subject, and confirm the final title before writing the file.
+8. Do not continue until the user confirms the subject, the type and the title.
+9. Confirm the filename with the user, in the agreed [spec location](#spec-location), then create the file (see [Live draft](#live-draft)) and ask the user to approve it, together with the go-ahead to publish (see [Publishing](#publishing)). The title is a working title: propose a better one in the document whenever the discussion sharpens the subject.
 
 ### 2. Interview
 
-Work through the sections in order (see [template.md](template.md)), filling the gaps with questions.
+Work through the sections in order (see [template.md](template.md)), filling the gaps with proposals written in the document and with questions (see [Live draft](#live-draft)).
 
 - Ask one question at a time by preference, and never more than 3 at a time; this applies to every step, including framing and review. Use your structured question tool (e.g. `AskUserQuestion` in Claude Code) when the answer is a choice between concrete options; use plain questions for open-ended context.
-- Offer your proposed answer where you have one, so the user can just confirm or correct it.
+- Where you have a proposed answer, write it in the document instead of asking, so the user can just approve or correct it.
 - Probe for what's missing: edge cases, error states, permissions, empty states, data volumes, platforms, backwards compatibility, migration, performance, accessibility, security.
 - Hunt down vague words ("fast", "simple", "better", "some users", "etc.") and replace them with concrete, verifiable statements.
 - When an answer reveals a new subject, treat it as a side issue (see Rules) — don't widen the spec.
-- Edge cases: propose the edge cases you can think of one at a time (or in small groups) with a suggested expected behaviour, and ask the user to confirm, correct or add to them.
-- User stories: derive them from the personas and the intent (and from formal requirements, when available), propose them for validation, and agree on acceptance criteria in Given / When / Then form that a test can check.
+- Edge cases: write the edge cases you can think of in the document one at a time (or in small groups), each with a suggested expected behaviour, and ask the user to approve, correct or add to them.
+- User stories: derive them from the personas and the intent (and from formal requirements, when available), write them in the document for approval, with acceptance criteria in Given / When / Then form that a test can check.
 - Rollout: ask whether the change ships in one go or in phases. For phases, agree on their order, what each delivers, who gets it, and its exit criteria. Phases split the delivery of this one subject; they never smuggle in another feature, bug fix or refactoring.
 - Prerequisites: for each phase, ask what must be in place before work on it starts (other specs, infrastructure, access, data, decisions). Record "None" only once the user confirms nothing is needed. A prerequisite that is another spec in the bundle also gets a `depends-on` link.
-- Blast radius (existing systems): explore the code to find the components likely to be impacted (callers, dependants, shared contracts, data, config, tests; use a code index's impact analysis, such as CodeGraph's blast-radius summary, when you have one and the repo is indexed), across every repository in the codebase scope. Present them to the user as hypotheses, together with the kind of impact, and ask what you missed — the user often knows about consumers outside the scope.
-- Keep a running list of open questions. The interview is done when every section can be written without an assumption.
+- Blast radius (existing systems): explore the code to find the components likely to be impacted (callers, dependants, shared contracts, data, config, tests; use a code index's impact analysis, such as CodeGraph's blast-radius summary, when you have one and the repo is indexed), across every repository in the codebase scope. Write them in Blast radius as hypotheses, together with the kind of impact, and ask the user what you missed — the user often knows about consumers outside the scope.
+- Keep a running list of open questions. The interview is done when every section is written and approved, with no assumption and no pending marker left.
 
 Type-specific questions to cover:
 
@@ -135,19 +149,20 @@ Type-specific questions to cover:
 
 ### 3. Draft
 
-1. Write the spec following [template.md](template.md) exactly: same frontmatter, same sections, same order. Set `status: draft`.
+The spec is drafted during the interview (see [Live draft](#live-draft)); these rules apply to every proposal you write in it.
+
+1. Follow [template.md](template.md) exactly: same frontmatter, same sections, same order, and `status: draft`.
 2. Prefer diagrams to prose in the workflow / user journey section (Mermaid: `flowchart`, `sequenceDiagram`, `stateDiagram-v2`), with short text only where the diagram needs explaining.
 3. Every statement must be specific and testable. If a statement can't be verified by a test or a reviewer, rewrite it or ask.
 4. If the user explicitly chooses to defer a question, mark it inline as `> **Open question:** …` — never fill it with a guess.
 
 ### 4. Review with the user
 
-1. Before writing the file, confirm its filename with the user, in the agreed [spec location](#spec-location).
-2. Write the file, then walk the user through it section by section and ask for corrections.
-3. Iterate until the user says the draft is ready for review. The spec stays `status: draft`: approving its content is the reviewers' job, in the pull request.
-4. Update the bundle's `index.md` and `log.md` if they exist (or were created at the user's request), and run the validator if available.
-5. [Publish](#publishing) the draft as a pull request.
-6. In your final reply, give the pull request's URL, and list:
+1. Check the spec against the [quality checklist](#quality-checklist), and write the fixes it calls for in the document, as proposals.
+2. Ask the user to read the whole spec once more, and write their corrections in the document, each committed when approved, until the user says the draft is ready for review. The spec stays `status: draft`: approving its content is the reviewers' job, in the pull request.
+3. Update the bundle's `index.md` and `log.md` if they exist (or were created at the user's request), and `generated.at`, as a last proposal; run the validator if available.
+4. Once that last step is committed and pushed, update the pull request's description and ask the user whether to mark it ready for review (see [Publishing](#publishing)).
+5. In your final reply, give the pull request's URL, and list:
    - any open questions left in the spec;
    - the side issues and what the user decided for each (separate spec / later discussion), so nothing is lost.
 
@@ -157,23 +172,25 @@ A spec is published as a draft in a pull request, and it is approved by the pull
 
 Approval is recorded by the [okf-approve](https://github.com/dzangolab/okf-actions/tree/main/approve) GitHub Action, in the repository that contains the spec folder. On merge, following the rules configured for the repository, it sets the documents the pull request changed to `status: stable` and records in `verified` who vouched for them (the approving reviewers, the author, the person who merged, or the folder's owners), with an entry in `log.md`. GitHub never lets the author of a pull request approve it; whether the author's own merge counts is the repository's choice, in its okf-approve rules.
 
-1. **Prepare.** In the repository that holds the spec location:
+1. **Prepare,** before the first commit. In the repository that holds the spec location:
    - work on a new branch from the default branch, named after the spec (e.g. `docs/<spec-id>`), unless the user names another one; never commit to the default branch;
    - stage only the spec and the bundle files it changed (`index.md`, `log.md`, `manifest.ai-xf.yaml`), never the user's other changes;
-   - follow the repository's conventions for branch names, commit messages (e.g. Conventional Commits, `docs(specs): add <spec-id>`) and pull request templates;
+   - follow the repository's conventions for branch names, commit messages (e.g. Conventional Commits: `docs(specs): add <spec-id>` for the first commit, then `docs(specs): <what changed> in <spec-id>`) and pull request templates;
    - check that the repository runs the okf-approve action (a workflow in `.github/workflows/` that uses `dzangolab/okf-actions/approve`, or its earlier name `dzangolab/okf-approve`). If it doesn't, tell the user that the spec will stay `draft` after the merge, and point them to [its setup](https://github.com/dzangolab/okf-actions/tree/main/approve#usage); don't add it yourself unless they ask.
-2. **Ask for the go-ahead once,** showing the branch, the files, the commit message and the pull request's title and reviewers (from `CODEOWNERS` when there is one, otherwise ask). The go-ahead covers the commit, the push and the pull request.
-3. **Publish:** commit, push the branch, and open the pull request (e.g. `gh pr create`). Its description gives the spec's intent, a link to the file, the open questions and the side issues. Don't merge it.
-4. **Changes requested in review** are made on the same branch: the spec stays `draft`, and edits to a draft aren't logged.
-5. **Stop at the pull request.** Never approve, merge, or set `stable` and `verified` yourself: the review, the merge and okf-approve do.
+2. **Ask for the go-ahead once,** with the first proposal (the file's skeleton), showing the branch, the files, the commit message, and the pull request's title and reviewers (from `CODEOWNERS` when there is one, otherwise ask). The go-ahead covers the branch, the draft pull request, its title and its reviewers; later approved steps are committed and pushed without asking again.
+3. **Open a draft pull request** at the first approved step: commit, push the branch, and open the pull request as a draft (e.g. `gh pr create --draft`). Its description gives the spec's intent, a link to the file, the open questions and the side issues; keep it up to date as the spec changes. Don't merge it.
+4. **Each later approved step** is a commit pushed to the same branch (see [Live draft](#live-draft)).
+5. **Ready for review:** the pull request stays a draft until the user says the draft is ready for review; then ask them whether to mark it ready for review (e.g. `gh pr ready`), and do it only on their yes.
+6. **Changes requested in review** are made on the same branch, as proposals in the document, each committed when the user approves it: the spec stays `draft`, and edits to a draft aren't logged.
+7. **Stop at the pull request.** Never approve, merge, or set `stable` and `verified` yourself: the review, the merge and okf-approve do.
 
 To change a `stable` spec, set it back to `status: draft` in the pull request that changes it, keeping its `verified` entries: okf-approve marks it `stable` again on merge and adds the new verifications.
 
-Without a git repository or a remote to push to, write the files and ask the user how the spec will be reviewed; leave it `draft` until then.
+Without a remote to push to, commit the approved steps locally. Without a git repository, still write proposals in the document, but undo a rejected one by editing the file back. In both cases, ask the user how the spec will be reviewed, and leave it `draft` until then.
 
 ## Quality checklist
 
-Before presenting the draft, check that:
+Before the final review with the user (see [4. Review with the user](#4-review-with-the-user)), check that:
 
 - [ ] Exactly one subject and one type.
 - [ ] The intent fits in one to three sentences and a newcomer understands it.
@@ -189,6 +206,7 @@ Before presenting the draft, check that:
 - [ ] Blast radius: for an existing system, every impacted component is named as in the code, with its kind of impact, and validated by the user; for a new system, it says "Not applicable: new system."
 - [ ] The spec is in the spec location the user confirmed.
 - [ ] The spec is `status: draft`, with no new `verified` entry: only the merge of its pull request makes it `stable`.
+- [ ] No `> **Pending:**` marker is left, and every approved step is committed and pushed, with no unapproved change left.
 - [ ] The codebase scope is confirmed by the user and recorded in Blast radius, with the branch and commit analysed per repository, and anything in scope that wasn't analysed.
 - [ ] No unjustified coupling between components: every dependency the spec introduces or relies on has a reason the user validated.
 - [ ] No implementation plan, task list or code.
